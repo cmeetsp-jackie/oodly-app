@@ -18,6 +18,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false)
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [resetSent, setResetSent] = useState(false)
+  const [signupComplete, setSignupComplete] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -49,6 +50,34 @@ export default function HomePage() {
     setUsername('')
     setError(null)
     setResetSent(false)
+    setSignupComplete(false)
+  }
+
+  // Email verification success screen
+  if (signupComplete) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-purple-50">
+        <div className="max-w-md w-full text-center space-y-6">
+          <div className="text-6xl">📧</div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">이메일을 확인해주세요!</h1>
+            <p className="text-gray-600 mt-2">
+              <span className="font-semibold text-purple-600">{email}</span>으로<br />
+              인증 링크를 보냈습니다.
+            </p>
+          </div>
+          <p className="text-sm text-gray-500">
+            이메일의 링크를 클릭하면 가입이 완료됩니다.
+          </p>
+          <button
+            onClick={() => { resetForm(); setView('login') }}
+            className="text-purple-600 font-semibold hover:underline"
+          >
+            로그인 화면으로 돌아가기
+          </button>
+        </div>
+      </div>
+    )
   }
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -74,8 +103,9 @@ export default function HomePage() {
       return
     }
 
-    router.push('/feed')
-    router.refresh()
+    // Show email verification message instead of redirecting
+    setSignupComplete(true)
+    setLoading(false)
   }
 
   const handleLogin = async (e: React.FormEvent) => {
