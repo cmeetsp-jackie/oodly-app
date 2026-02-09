@@ -36,7 +36,7 @@ export default function HomePage() {
   // Show nothing while checking auth
   if (checkingAuth) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-purple-50">
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-slate-100">
         <div className="text-center animate-pulse">
           <CirqlLogo size="lg" />
         </div>
@@ -56,13 +56,13 @@ export default function HomePage() {
   // Email verification success screen
   if (signupComplete) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-purple-50">
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-slate-100">
         <div className="max-w-md w-full text-center space-y-6">
           <div className="text-6xl">📧</div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">이메일을 확인해주세요!</h1>
             <p className="text-gray-600 mt-2">
-              <span className="font-semibold text-purple-600">{email}</span>으로<br />
+              <span className="font-semibold text-slate-800">{email}</span>으로<br />
               인증 링크를 보냈습니다.
             </p>
           </div>
@@ -71,7 +71,7 @@ export default function HomePage() {
           </p>
           <button
             onClick={() => { resetForm(); setView('login') }}
-            className="text-purple-600 font-semibold hover:underline"
+            className="text-slate-800 font-semibold hover:underline"
           >
             로그인 화면으로 돌아가기
           </button>
@@ -151,7 +151,7 @@ export default function HomePage() {
   // Landing View
   if (view === 'landing') {
     return (
-      <div className="min-h-screen flex flex-col p-4 pt-12 bg-gradient-to-br from-gray-50 via-white to-purple-50">
+      <div className="min-h-screen flex flex-col p-4 pt-12 bg-gradient-to-br from-gray-50 via-white to-slate-100">
         <div className="max-w-md w-full mx-auto text-center space-y-5">
           <div className="space-y-2">
             <div className="flex justify-center">
@@ -187,7 +187,7 @@ export default function HomePage() {
           <div className="space-y-2 pt-1">
             <Button 
               onClick={() => { resetForm(); setView('signup') }}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-purple-500/25" 
+              className="w-full bg-gradient-to-r from-slate-800 to-blue-900 hover:from-slate-900 hover:to-indigo-900 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-slate-1000/25" 
               size="lg"
             >
               시작하기
@@ -212,7 +212,7 @@ export default function HomePage() {
 
   // Auth Form View (Signup or Login)
   return (
-    <div className="min-h-screen flex flex-col p-4 pt-2 bg-gradient-to-br from-gray-50 via-white to-purple-50">
+    <div className="min-h-screen flex flex-col p-4 pt-2 bg-gradient-to-br from-gray-50 via-white to-slate-100">
       <div className="max-w-md w-full mx-auto">
         {/* Header with back button */}
         <div className="flex items-center mb-3">
@@ -285,7 +285,7 @@ export default function HomePage() {
               required
               minLength={2}
               maxLength={20}
-              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-1000 focus:border-transparent bg-white"
             />
           )}
           <input
@@ -294,7 +294,7 @@ export default function HomePage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-1000 focus:border-transparent bg-white"
           />
           {view !== 'forgot' && (
             <input
@@ -304,7 +304,7 @@ export default function HomePage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={view === 'signup' ? 6 : undefined}
-              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-1000 focus:border-transparent bg-white"
             />
           )}
           
@@ -315,7 +315,7 @@ export default function HomePage() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-purple-500/25"
+            className="w-full py-3.5 bg-gradient-to-r from-slate-800 to-blue-900 hover:from-slate-900 hover:to-indigo-900 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-1000/25"
           >
             {loading 
               ? (view === 'signup' ? '가입 중...' : view === 'forgot' ? '전송 중...' : '로그인 중...') 
