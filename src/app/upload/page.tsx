@@ -178,11 +178,11 @@ export default function UploadPage() {
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
             rows={2}
-            maxLength={500}
+            maxLength={150}
             className="text-gray-900 bg-white border-gray-300"
           />
           <p className="text-right text-xs text-gray-400 mt-1">
-            {caption.length}/500
+            {caption.length}/150
           </p>
         </div>
 
@@ -196,12 +196,12 @@ export default function UploadPage() {
             value={story}
             onChange={(e) => setStory(e.target.value)}
             rows={4}
-            maxLength={1000}
+            maxLength={150}
             className="text-gray-900 bg-white border-gray-300"
             required
           />
           <p className="text-right text-xs text-gray-400 mt-1">
-            {story.length}/1000
+            {story.length}/150
           </p>
         </div>
 
