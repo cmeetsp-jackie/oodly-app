@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { CirqlLogo } from '@/components/cirql-logo'
 
 type View = 'landing' | 'signup' | 'login'
 
@@ -34,10 +35,8 @@ export default function HomePage() {
   if (checkingAuth) {
     return (
       <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-purple-50">
-        <div className="text-center">
-          <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent animate-pulse">
-            Cirql
-          </h1>
+        <div className="text-center animate-pulse">
+          <CirqlLogo size="lg" />
         </div>
       </div>
     )
@@ -99,10 +98,10 @@ export default function HomePage() {
     return (
       <div className="min-h-screen flex flex-col p-4 pt-12 bg-gradient-to-br from-gray-50 via-white to-purple-50">
         <div className="max-w-md w-full mx-auto text-center space-y-5">
-          <div className="space-y-1">
-            <h1 className="text-4xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
-              Cirql
-            </h1>
+          <div className="space-y-2">
+            <div className="flex justify-center">
+              <CirqlLogo size="lg" />
+            </div>
             <p className="text-gray-600 text-sm font-medium">지인과 셀럽의 애정템을 사고파는 곳</p>
           </div>
 
@@ -212,9 +211,9 @@ export default function HomePage() {
 
         {/* Logo */}
         <div className="text-center mb-4">
-          <h1 className="text-2xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
-            Cirql
-          </h1>
+          <div className="flex justify-center mb-1">
+            <CirqlLogo size="md" />
+          </div>
           <p className="text-gray-500 text-sm">
             {view === 'signup' ? '나만의 옷장을 만들어보세요' : '다시 만나서 반가워요'}
           </p>
