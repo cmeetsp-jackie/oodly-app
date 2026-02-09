@@ -13,6 +13,7 @@ export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [caption, setCaption] = useState('')
+  const [story, setStory] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -51,6 +52,11 @@ export default function UploadPage() {
   const handleUpload = async () => {
     if (!file) {
       setError('이미지를 선택해주세요.')
+      return
+    }
+    
+    if (!story.trim()) {
+      setError('추억/스토리를 입력해주세요.')
       return
     }
 
@@ -92,6 +98,7 @@ export default function UploadPage() {
           user_id: user.id,
           image_url: publicUrl,
           caption: caption.trim() || null,
+          story: story.trim(),
         })
 
       if (postError) {
@@ -120,7 +127,7 @@ export default function UploadPage() {
         <h1 className="font-semibold text-gray-900">새 게시물</h1>
         <Button 
           onClick={handleUpload} 
-          disabled={!file || loading}
+          disabled={!file || !story.trim() || loading}
           size="sm"
         >
           {loading ? '업로드 중...' : '공유'}
@@ -165,16 +172,36 @@ export default function UploadPage() {
 
         {/* Caption */}
         <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">상품 설명</label>
           <Textarea
-            placeholder="캡션 입력..."
+            placeholder="상품에 대한 설명을 입력해주세요..."
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
-            rows={3}
+            rows={2}
             maxLength={500}
             className="text-gray-900 bg-white border-gray-300"
           />
           <p className="text-right text-xs text-gray-400 mt-1">
             {caption.length}/500
+          </p>
+        </div>
+
+        {/* Story - Required */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            추억/스토리 <span className="text-red-500">*</span>
+          </label>
+          <Textarea
+            placeholder="이 물건과 함께한 나만의 추억이나 스토리를 들려주세요..."
+            value={story}
+            onChange={(e) => setStory(e.target.value)}
+            rows={4}
+            maxLength={1000}
+            className="text-gray-900 bg-white border-gray-300"
+            required
+          />
+          <p className="text-right text-xs text-gray-400 mt-1">
+            {story.length}/1000
           </p>
         </div>
 
@@ -186,7 +213,7 @@ export default function UploadPage() {
         <div className="hidden md:block">
           <Button 
             onClick={handleUpload} 
-            disabled={!file || loading}
+            disabled={!file || !story.trim() || loading}
             className="w-full"
           >
             {loading ? '업로드 중...' : '공유하기'}
