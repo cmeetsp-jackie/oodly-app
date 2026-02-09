@@ -157,6 +157,7 @@ export default function HomePage() {
             <div className="flex justify-center">
               <CirqlLogo size="lg" />
             </div>
+            <p className="text-gray-500 text-xs">옷장부터 애정하는 만년필까지</p>
             <p className="text-gray-600 text-sm font-medium">친구의 애정템, 셀럽의 애정템 그리고 나의 애정템이 한곳에.</p>
           </div>
 
