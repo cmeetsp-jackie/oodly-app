@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { CirqlLogo } from '@/components/cirql-logo'
 
-type View = 'landing' | 'signup' | 'login'
+type View = 'landing' | 'signup' | 'login' | 'forgot'
 
 export default function HomePage() {
   const [view, setView] = useState<View>('landing')
@@ -17,6 +17,7 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [checkingAuth, setCheckingAuth] = useState(true)
+  const [resetSent, setResetSent] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -47,6 +48,7 @@ export default function HomePage() {
     setPassword('')
     setUsername('')
     setError(null)
+    setResetSent(false)
   }
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -91,6 +93,29 @@ export default function HomePage() {
 
     router.push('/feed')
     router.refresh()
+  }
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) {
+      setError('이메일을 입력해주세요.')
+      return
+    }
+    setLoading(true)
+    setError(null)
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+      return
+    }
+
+    setResetSent(true)
+    setLoading(false)
   }
 
   // Landing View
@@ -200,7 +225,7 @@ export default function HomePage() {
           <button
             onClick={() => { resetForm(); setView('login') }}
             className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${
-              view === 'login' 
+              (view === 'login' || view === 'forgot')
                 ? 'bg-white text-gray-900 shadow-sm' 
                 : 'text-gray-500 hover:text-gray-700'
             }`}
@@ -215,12 +240,12 @@ export default function HomePage() {
             <CirqlLogo size="md" />
           </div>
           <p className="text-gray-500 text-sm">
-            {view === 'signup' ? '나만의 옷장을 만들어보세요' : '다시 만나서 반가워요'}
+            {view === 'signup' ? '나만의 옷장을 만들어보세요' : view === 'forgot' ? '이메일로 재설정 링크를 보내드려요' : '다시 만나서 반가워요'}
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={view === 'signup' ? handleSignup : handleLogin} className="space-y-3">
+        <form onSubmit={view === 'signup' ? handleSignup : view === 'forgot' ? handleForgotPassword : handleLogin} className="space-y-3">
           {view === 'signup' && (
             <input
               type="text"
@@ -241,15 +266,17 @@ export default function HomePage() {
             required
             className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
           />
-          <input
-            type="password"
-            placeholder={view === 'signup' ? '비밀번호 (6자 이상)' : '비밀번호'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={view === 'signup' ? 6 : undefined}
-            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
-          />
+          {view !== 'forgot' && (
+            <input
+              type="password"
+              placeholder={view === 'signup' ? '비밀번호 (6자 이상)' : '비밀번호'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={view === 'signup' ? 6 : undefined}
+              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+            />
+          )}
           
           {error && (
             <p className="text-red-500 text-sm px-1">{error}</p>
@@ -261,10 +288,26 @@ export default function HomePage() {
             className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-purple-500/25"
           >
             {loading 
-              ? (view === 'signup' ? '가입 중...' : '로그인 중...') 
-              : (view === 'signup' ? '시작하기' : '로그인')
+              ? (view === 'signup' ? '가입 중...' : view === 'forgot' ? '전송 중...' : '로그인 중...') 
+              : (view === 'signup' ? '시작하기' : view === 'forgot' ? '비밀번호 재설정 링크 보내기' : '로그인')
             }
           </button>
+          
+          {view === 'login' && (
+            <button
+              type="button"
+              onClick={() => { setError(null); setView('forgot') }}
+              className="w-full text-center text-sm text-gray-500 hover:text-gray-700 mt-2"
+            >
+              비밀번호를 잊으셨나요?
+            </button>
+          )}
+          
+          {view === 'forgot' && resetSent && (
+            <p className="text-center text-sm text-green-600 mt-2">
+              비밀번호 재설정 링크를 이메일로 보냈습니다. 📧
+            </p>
+          )}
         </form>
       </div>
     </div>
