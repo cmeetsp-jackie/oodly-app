@@ -3,9 +3,8 @@ import { redirect } from 'next/navigation'
 import { Nav } from '@/components/nav'
 import { PostCard } from '@/components/post-card'
 
-// Disable caching - always fetch fresh data
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+// Revalidate every 10 seconds for faster page loads
+export const revalidate = 10
 
 export default async function FeedPage() {
   const supabase = await createClient()

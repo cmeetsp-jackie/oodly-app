@@ -171,6 +171,7 @@ export default function UploadPage() {
             onChange={(e) => setCaption(e.target.value)}
             rows={3}
             maxLength={500}
+            className="text-gray-900 bg-white border-gray-300"
           />
           <p className="text-right text-xs text-gray-400 mt-1">
             {caption.length}/500
