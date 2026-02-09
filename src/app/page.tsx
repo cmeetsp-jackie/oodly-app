@@ -15,15 +15,33 @@ export default function HomePage() {
   const [username, setUsername] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [checkingAuth, setCheckingAuth] = useState(true)
   const router = useRouter()
   const supabase = createClient()
 
   // Check if already logged in
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) router.push('/feed')
+      if (user) {
+        router.push('/feed')
+      } else {
+        setCheckingAuth(false)
+      }
     })
   }, [router, supabase.auth])
+
+  // Show nothing while checking auth
+  if (checkingAuth) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-purple-50">
+        <div className="text-center">
+          <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent animate-pulse">
+            Oodly
+          </h1>
+        </div>
+      </div>
+    )
+  }
 
   const resetForm = () => {
     setEmail('')
