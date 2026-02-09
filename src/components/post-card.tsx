@@ -145,15 +145,15 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
 
         {/* Likes count */}
         {likesCount > 0 && (
-          <p className="mt-2 font-semibold text-sm">
+          <p className="mt-2 font-semibold text-sm text-gray-900">
             찜 {likesCount}개
           </p>
         )}
 
         {/* Caption */}
         {post.caption && (
-          <p className="mt-1 text-sm">
-            <span className="font-semibold">{displayName}</span>{' '}
+          <p className="mt-1 text-sm text-gray-800">
+            <span className="font-bold text-gray-900">{displayName}</span>{' '}
             {post.caption}
           </p>
         )}
