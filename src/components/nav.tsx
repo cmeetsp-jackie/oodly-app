@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, PlusSquare, User, MessageCircle } from 'lucide-react'
+import { Home, PlusSquare, User, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -101,7 +101,7 @@ export function Nav({ user }: NavProps) {
             pathname === '/chat' || pathname.startsWith('/chat/') ? 'text-black' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          <MessageCircle size={24} />
+          <Zap size={24} />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
               {unreadCount > 9 ? '9+' : unreadCount}

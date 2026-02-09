@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Heart, MessageCircle, Send } from 'lucide-react'
+import { Star, MessageSquare, Zap } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { createClient } from '@/lib/supabase/client'
 import { formatDistanceToNow } from '@/lib/utils'
@@ -116,19 +116,31 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
 
       {/* Actions */}
       <div className="p-3">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button 
             onClick={handleLike}
-            className="transition-transform active:scale-125"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+              isLiked 
+                ? 'bg-amber-100 text-amber-600' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
             disabled={isLiking}
           >
-            <Heart 
-              size={24} 
-              className={isLiked ? 'fill-red-500 text-red-500' : 'text-gray-700'} 
+            <Star 
+              size={18} 
+              className={isLiked ? 'fill-amber-500' : ''} 
             />
+            {likesCount > 0 && <span className="text-sm font-semibold">{likesCount}</span>}
           </button>
-          <Link href={`/post/${post.id}`}>
-            <MessageCircle size={24} className="text-gray-700" />
+          
+          <Link 
+            href={`/post/${post.id}`}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+          >
+            <MessageSquare size={18} />
+            {(post.comments_count || 0) > 0 && (
+              <span className="text-sm font-semibold">{post.comments_count}</span>
+            )}
           </Link>
           
           {/* Chat button - only show on others' posts */}
@@ -136,19 +148,13 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             <button
               onClick={handleStartChat}
               disabled={isStartingChat}
-              className="transition-transform active:scale-95 disabled:opacity-50 ml-auto"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all active:scale-95 disabled:opacity-50 ml-auto"
             >
-              <Send size={24} className="text-blue-600" />
+              <Zap size={18} className="fill-white" />
+              <span className="text-sm font-semibold">채팅</span>
             </button>
           )}
         </div>
-
-        {/* Likes count */}
-        {likesCount > 0 && (
-          <p className="mt-2 font-semibold text-sm text-gray-900">
-            찜 {likesCount}개
-          </p>
-        )}
 
         {/* Caption */}
         {post.caption && (
@@ -156,16 +162,6 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             <span className="font-bold text-gray-900">{displayName}</span>{' '}
             {post.caption}
           </p>
-        )}
-
-        {/* Comments count */}
-        {(post.comments_count || 0) > 0 && (
-          <Link 
-            href={`/post/${post.id}`}
-            className="mt-1 text-sm text-gray-500 block"
-          >
-            댓글 {post.comments_count}개 모두 보기
-          </Link>
         )}
 
         {/* Time */}
