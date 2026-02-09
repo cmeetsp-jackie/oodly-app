@@ -13,6 +13,7 @@ interface EditDisplayNameProps {
 export function EditDisplayName({ currentDisplayName, userId }: EditDisplayNameProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [displayName, setDisplayName] = useState(currentDisplayName)
+  const [savedDisplayName, setSavedDisplayName] = useState(currentDisplayName)
   const [saving, setSaving] = useState(false)
   const router = useRouter()
 
@@ -28,7 +29,9 @@ export function EditDisplayName({ currentDisplayName, userId }: EditDisplayNameP
       .eq('id', userId)
 
     if (!error) {
+      setSavedDisplayName(displayName.trim())
       setIsEditing(false)
+      // Refresh in background for server sync
       router.refresh()
     } else {
       console.error('Error updating display name:', error)
@@ -78,7 +81,7 @@ export function EditDisplayName({ currentDisplayName, userId }: EditDisplayNameP
       <span className="text-sm text-gray-500">써클명</span>
       <div className="flex items-center gap-2">
         <p className="text-lg font-medium text-gray-900">
-          {currentDisplayName || <span className="text-gray-400">설정하기</span>}
+          {savedDisplayName || <span className="text-gray-400">설정하기</span>}
         </p>
         <button 
           onClick={() => setIsEditing(true)}
