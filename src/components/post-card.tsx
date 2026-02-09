@@ -95,11 +95,11 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
       {/* Header */}
       <div className="flex items-center p-3">
         <Link href={`/profile/${post.user?.id}`} className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-9 w-9 ring-2 ring-blue-100">
             <AvatarImage src={post.user?.avatar_url || ''} />
-            <AvatarFallback className="bg-blue-100 text-blue-600">{displayName?.[0]?.toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold">{displayName?.[0]?.toUpperCase()}</AvatarFallback>
           </Avatar>
-          <span className="font-semibold text-sm">{displayName}</span>
+          <span className="font-bold text-gray-900">{displayName}</span>
         </Link>
       </div>
 
