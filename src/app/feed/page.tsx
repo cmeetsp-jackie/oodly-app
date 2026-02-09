@@ -15,9 +15,9 @@ export default async function FeedPage() {
     .from('posts')
     .select(`
       *,
-      user:users(*),
-      likes:likes(count),
-      comments:comments(count)
+      user:users!posts_user_id_fkey(*),
+      likes(count),
+      comments(count)
     `)
     .order('created_at', { ascending: false })
     .limit(50)
