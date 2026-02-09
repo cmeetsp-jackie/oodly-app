@@ -37,7 +37,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Oodly</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Cirql</h1>
           <p className="text-gray-600 mt-2">나의 옷장을 공유하세요</p>
         </div>
         

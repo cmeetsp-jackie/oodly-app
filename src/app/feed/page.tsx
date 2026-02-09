@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Nav } from '@/components/nav'
 import { PostCard } from '@/components/post-card'
-import { OodlyLogo } from '@/components/oodly-logo'
+import { CirqlLogo } from '@/components/cirql-logo'
 
 // Revalidate every 10 seconds for faster page loads
 export const revalidate = 10
@@ -47,7 +47,7 @@ export default async function FeedPage() {
     <div className="min-h-screen bg-gray-50 pb-20 md:pt-16 md:pb-4">
       <header className="sticky top-0 bg-white border-b border-gray-200 p-3 z-10 md:hidden">
         <div className="flex justify-center">
-          <OodlyLogo size="md" />
+          <CirqlLogo size="md" />
         </div>
       </header>
       

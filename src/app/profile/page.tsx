@@ -38,7 +38,7 @@ export default async function ProfilePage() {
     .select('*', { count: 'exact', head: true })
     .eq('follower_id', user.id)
 
-  // 우들리명 (display_name) 또는 username 사용
+  // 써클명 (display_name) 또는 username 사용
   const displayName = profile?.display_name || profile?.username
 
   return (
@@ -64,7 +64,7 @@ export default async function ProfilePage() {
                 <p className="text-lg font-medium text-gray-900">{profile?.username}</p>
               </div>
               
-              {/* 우들리명 (편집 가능) */}
+              {/* 써클명 (편집 가능) */}
               <EditDisplayName 
                 currentDisplayName={profile?.display_name || ''} 
                 userId={user.id}

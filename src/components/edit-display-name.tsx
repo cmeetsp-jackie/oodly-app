@@ -32,7 +32,7 @@ export function EditDisplayName({ currentDisplayName, userId }: EditDisplayNameP
       router.refresh()
     } else {
       console.error('Error updating display name:', error)
-      alert('우들리명 저장에 실패했습니다.')
+      alert('써클명 저장에 실패했습니다.')
     }
     setSaving(false)
   }
@@ -45,14 +45,14 @@ export function EditDisplayName({ currentDisplayName, userId }: EditDisplayNameP
   if (isEditing) {
     return (
       <div>
-        <span className="text-sm text-gray-500">우들리명</span>
+        <span className="text-sm text-gray-500">써클명</span>
         <div className="flex items-center gap-2 mt-1">
           <input
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             className="flex-1 px-2 py-1 border border-gray-300 rounded text-gray-900 text-sm"
-            placeholder="우들리명을 입력하세요"
+            placeholder="써클명을 입력하세요"
             autoFocus
           />
           <button 
@@ -75,7 +75,7 @@ export function EditDisplayName({ currentDisplayName, userId }: EditDisplayNameP
 
   return (
     <div>
-      <span className="text-sm text-gray-500">우들리명</span>
+      <span className="text-sm text-gray-500">써클명</span>
       <div className="flex items-center gap-2">
         <p className="text-lg font-medium text-gray-900">
           {currentDisplayName || <span className="text-gray-400">설정하기</span>}

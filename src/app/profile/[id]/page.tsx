@@ -63,7 +63,7 @@ export default async function UserProfilePage({
     isFollowing = !!followData
   }
 
-  // 우들리명 (display_name) 또는 username 사용
+  // 써클명 (display_name) 또는 username 사용
   const displayName = profile.display_name || profile.username
 
   return (
