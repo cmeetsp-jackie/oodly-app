@@ -7,7 +7,8 @@ export default async function FeedPage() {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  // Temporarily disabled for testing
+  // if (!user) redirect('/login')
 
   // Get posts with user info and counts
   const { data: posts, error } = await supabase
