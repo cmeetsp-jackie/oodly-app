@@ -5,6 +5,7 @@ import { Nav } from '@/components/nav'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { EditDisplayName } from '@/components/edit-display-name'
+import { LogoutButton } from '@/components/logout-button'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -86,6 +87,11 @@ export default async function ProfilePage() {
               <p className="font-semibold">{followingCount || 0}</p>
               <p className="text-sm text-gray-500">팔로잉</p>
             </Link>
+          </div>
+
+          {/* Logout */}
+          <div className="mt-4 pt-4 border-t border-gray-100 flex justify-center">
+            <LogoutButton />
           </div>
         </div>
 

@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, PlusSquare, User, LogOut } from 'lucide-react'
+import { Home, PlusSquare, User, MessageCircle } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 
 interface NavProps {
   user: { id: string; email?: string } | null
@@ -12,14 +12,56 @@ interface NavProps {
 
 export function Nav({ user }: NavProps) {
   const pathname = usePathname()
-  const router = useRouter()
+  const [unreadCount, setUnreadCount] = useState(0)
   const supabase = createClient()
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
-  }
+  useEffect(() => {
+    if (!user) return
+
+    // Fetch initial unread count
+    const fetchUnread = async () => {
+      // Get conversations where user is participant
+      const { data: conversations } = await supabase
+        .from('conversations')
+        .select('id')
+        .or(`participant1_id.eq.${user.id},participant2_id.eq.${user.id}`)
+
+      if (!conversations?.length) return
+
+      const conversationIds = conversations.map(c => c.id)
+
+      // Count unread messages not sent by user
+      const { count } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .in('conversation_id', conversationIds)
+        .neq('sender_id', user.id)
+        .eq('is_read', false)
+
+      setUnreadCount(count || 0)
+    }
+
+    fetchUnread()
+
+    // Subscribe to new messages
+    const channel = supabase
+      .channel('nav-messages')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        () => fetchUnread()
+      )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'messages' },
+        () => fetchUnread()
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [user, supabase])
 
   if (!user) return null
 
@@ -47,18 +89,25 @@ export function Nav({ user }: NavProps) {
         <Link 
           href="/profile" 
           className={`p-2 rounded-lg transition-colors ${
-            pathname === '/profile' ? 'text-black' : 'text-gray-400 hover:text-gray-600'
+            pathname === '/profile' || pathname.startsWith('/profile/') ? 'text-black' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           <User size={24} />
         </Link>
 
-        <button 
-          onClick={handleLogout}
-          className="p-2 rounded-lg text-gray-400 hover:text-gray-600 transition-colors"
+        <Link 
+          href="/chat"
+          className={`p-2 rounded-lg transition-colors relative ${
+            pathname === '/chat' || pathname.startsWith('/chat/') ? 'text-black' : 'text-gray-400 hover:text-gray-600'
+          }`}
         >
-          <LogOut size={24} />
-        </button>
+          <MessageCircle size={24} />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </Link>
       </div>
     </nav>
   )

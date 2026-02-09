@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, MessageCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Heart, MessageCircle, Send } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { createClient } from '@/lib/supabase/client'
 import { formatDistanceToNow } from '@/lib/utils'
@@ -18,7 +19,11 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(post.is_liked || false)
   const [likesCount, setLikesCount] = useState(post.likes_count || 0)
   const [isLiking, setIsLiking] = useState(false)
+  const [isStartingChat, setIsStartingChat] = useState(false)
   const supabase = createClient()
+  const router = useRouter()
+  
+  const isOwnPost = post.user_id === currentUserId
 
   const handleLike = async () => {
     if (isLiking) return
@@ -43,6 +48,43 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     }
 
     setIsLiking(false)
+  }
+
+  const handleStartChat = async () => {
+    if (isStartingChat || !post.user?.id) return
+    setIsStartingChat(true)
+
+    try {
+      // Check if conversation already exists
+      const { data: existing } = await supabase
+        .from('conversations')
+        .select('id')
+        .or(`and(participant1_id.eq.${currentUserId},participant2_id.eq.${post.user.id}),and(participant1_id.eq.${post.user.id},participant2_id.eq.${currentUserId})`)
+        .single()
+
+      if (existing) {
+        router.push(`/chat/${existing.id}`)
+      } else {
+        // Create new conversation
+        const { data: newConv, error } = await supabase
+          .from('conversations')
+          .insert({
+            participant1_id: currentUserId,
+            participant2_id: post.user.id,
+            post_id: post.id
+          })
+          .select('id')
+          .single()
+
+        if (error) throw error
+        router.push(`/chat/${newConv.id}`)
+      }
+    } catch (error) {
+      console.error('Error starting chat:', error)
+      alert('채팅을 시작할 수 없습니다.')
+    }
+
+    setIsStartingChat(false)
   }
 
   // 우들리명 (display_name) 또는 username 사용
@@ -70,6 +112,17 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
           className="object-cover"
           sizes="(max-width: 512px) 100vw, 512px"
         />
+        
+        {/* Chat button - only show on others' posts */}
+        {!isOwnPost && currentUserId && (
+          <button
+            onClick={handleStartChat}
+            disabled={isStartingChat}
+            className="absolute bottom-3 right-3 bg-white/90 hover:bg-white p-2.5 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-50"
+          >
+            <Send size={20} className="text-blue-600" />
+          </button>
+        )}
       </div>
 
       {/* Actions */}

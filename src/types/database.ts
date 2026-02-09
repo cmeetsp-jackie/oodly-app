@@ -43,6 +43,32 @@ export interface Comment {
   user?: User
 }
 
+export interface Conversation {
+  id: string
+  participant1_id: string
+  participant2_id: string
+  post_id: string | null
+  last_message_at: string
+  created_at: string
+  // Joined fields
+  participant1?: User
+  participant2?: User
+  post?: Post
+  last_message?: Message
+  unread_count?: number
+}
+
+export interface Message {
+  id: string
+  conversation_id: string
+  sender_id: string
+  content: string
+  is_read: boolean
+  created_at: string
+  // Joined fields
+  sender?: User
+}
+
 export interface Database {
   public: {
     Tables: {
