@@ -17,7 +17,7 @@ export default async function HomePage() {
       <div className="max-w-md w-full text-center space-y-8">
         {/* Logo */}
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">Closette</h1>
+          <h1 className="text-4xl font-bold tracking-tight">Oodly</h1>
           <p className="text-gray-600">나만의 옷장을 공유하세요</p>
         </div>
 
