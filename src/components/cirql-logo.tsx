@@ -26,16 +26,7 @@ export function CirqlLogo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
       >
         Q
       </span>
-      <span 
-        className="text-zinc-900 inline-block origin-top"
-        style={{ 
-          fontWeight: 900,
-          transform: 'scaleY(1.3)',
-          marginBottom: '-0.15em',
-        }}
-      >
-        L
-      </span>
+      <span className="text-zinc-900" style={{ fontWeight: 900 }}>L</span>
     </div>
   )
 }
