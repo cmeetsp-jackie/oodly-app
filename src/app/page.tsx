@@ -143,13 +143,29 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col p-4 pt-2 bg-gradient-to-br from-gray-50 via-white to-purple-50">
       <div className="max-w-md w-full mx-auto">
         {/* Header with back button */}
-        <div className="flex items-center mb-4">
+        <div className="flex items-center mb-3">
           <button 
             onClick={() => { resetForm(); setView('landing') }}
             className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeft className="h-6 w-6 text-gray-700" />
           </button>
+        </div>
+
+        {/* Feature highlights - compact */}
+        <div className="flex gap-2 mb-4">
+          <div className="flex-1 flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-100">
+            <span className="text-base">💎</span>
+            <span className="text-xs font-medium text-gray-700">애정템 공유</span>
+          </div>
+          <div className="flex-1 flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-100">
+            <span className="text-base">💬</span>
+            <span className="text-xs font-medium text-gray-700">찜&소통</span>
+          </div>
+          <div className="flex-1 flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-100">
+            <span className="text-base">✨</span>
+            <span className="text-xs font-medium text-gray-700">팔로우</span>
+          </div>
         </div>
 
         {/* Tab Switcher */}
