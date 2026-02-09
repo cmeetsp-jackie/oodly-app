@@ -209,6 +209,14 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
           </p>
         )}
 
+        {/* Story */}
+        {post.story && (
+          <div className="mt-2 p-3 bg-amber-50 rounded-lg border border-amber-100">
+            <p className="text-xs text-amber-600 font-medium mb-1">💭 추억/스토리</p>
+            <p className="text-sm text-gray-700">{post.story}</p>
+          </div>
+        )}
+
         {/* Time */}
         <p className="mt-1 text-xs text-gray-400">
           {formatDistanceToNow(post.created_at)}
