@@ -187,7 +187,7 @@ export default function HomePage() {
           <div className="space-y-2 pt-1">
             <Button 
               onClick={() => { resetForm(); setView('signup') }}
-              className="w-full bg-gradient-to-r from-slate-800 to-blue-900 hover:from-slate-900 hover:to-indigo-900 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-slate-1000/25" 
+              className="w-full bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-slate-900 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-blue-800/25" 
               size="lg"
             >
               시작하기
@@ -315,7 +315,7 @@ export default function HomePage() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-3.5 bg-gradient-to-r from-slate-800 to-blue-900 hover:from-slate-900 hover:to-indigo-900 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-1000/25"
+            className="w-full py-3.5 bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-slate-900 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-800/25"
           >
             {loading 
               ? (view === 'signup' ? '가입 중...' : view === 'forgot' ? '전송 중...' : '로그인 중...') 

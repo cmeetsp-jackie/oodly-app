@@ -18,7 +18,7 @@ export function CirqlLogo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
       <span className="text-zinc-900">C</span>
       <span className="text-zinc-900 lowercase">ir</span>
       <span 
-        className="bg-gradient-to-br from-violet-600 via-fuchsia-500 to-orange-400 bg-clip-text text-transparent"
+        className="bg-gradient-to-br from-blue-700 via-blue-800 to-slate-800 bg-clip-text text-transparent"
         style={{ 
           fontSize: '1.1em',
           fontWeight: 900,
@@ -28,7 +28,7 @@ export function CirqlLogo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
       </span>
       <span className="text-zinc-900 lowercase">l</span>
       <span 
-        className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-fuchsia-500 to-orange-400 ml-0.5"
+        className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-blue-700 to-slate-800 ml-0.5"
         style={{ marginBottom: '0.6em' }}
       />
     </div>
