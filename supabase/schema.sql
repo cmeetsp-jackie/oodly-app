@@ -9,6 +9,7 @@ CREATE TABLE users (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT NOT NULL UNIQUE,
   username TEXT NOT NULL UNIQUE,
+  display_name TEXT,  -- 우들리명 (앱 내 표시 이름)
   avatar_url TEXT,
   bio TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL

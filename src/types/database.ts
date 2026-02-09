@@ -2,6 +2,7 @@ export interface User {
   id: string
   email: string
   username: string
+  display_name: string | null  // 우들리명
   avatar_url: string | null
   bio: string | null
   created_at: string

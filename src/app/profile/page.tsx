@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Nav } from '@/components/nav'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
+import { EditDisplayName } from '@/components/edit-display-name'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -36,10 +37,13 @@ export default async function ProfilePage() {
     .select('*', { count: 'exact', head: true })
     .eq('follower_id', user.id)
 
+  // 우들리명 (display_name) 또는 username 사용
+  const displayName = profile?.display_name || profile?.username
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pt-16 md:pb-4">
       <header className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10 md:hidden">
-        <h1 className="text-xl font-bold text-center">{profile?.username}</h1>
+        <h1 className="text-xl font-bold text-center">{displayName}</h1>
       </header>
 
       <main className="max-w-lg mx-auto">
@@ -48,16 +52,23 @@ export default async function ProfilePage() {
           <div className="flex items-center gap-6">
             <Avatar className="h-20 w-20">
               <AvatarImage src={profile?.avatar_url || ''} />
-              <AvatarFallback className="text-2xl">
-                {profile?.username?.[0]?.toUpperCase()}
+              <AvatarFallback className="text-2xl bg-blue-100 text-blue-600">
+                {displayName?.[0]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
             
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold">{profile?.username}</h2>
-              {profile?.bio && (
-                <p className="text-gray-600 mt-1">{profile.bio}</p>
-              )}
+            <div className="flex-1 space-y-2">
+              {/* 이름 (실명) */}
+              <div>
+                <span className="text-sm text-gray-500">이름</span>
+                <p className="text-lg font-medium text-gray-900">{profile?.username}</p>
+              </div>
+              
+              {/* 우들리명 (편집 가능) */}
+              <EditDisplayName 
+                currentDisplayName={profile?.display_name || ''} 
+                userId={user.id}
+              />
             </div>
           </div>
 

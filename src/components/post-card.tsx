@@ -45,6 +45,9 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     setIsLiking(false)
   }
 
+  // 우들리명 (display_name) 또는 username 사용
+  const displayName = post.user?.display_name || post.user?.username
+
   return (
     <article className="bg-white">
       {/* Header */}
@@ -52,9 +55,9 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
         <Link href={`/profile/${post.user?.id}`} className="flex items-center gap-3">
           <Avatar className="h-8 w-8">
             <AvatarImage src={post.user?.avatar_url || ''} />
-            <AvatarFallback>{post.user?.username?.[0]?.toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="bg-blue-100 text-blue-600">{displayName?.[0]?.toUpperCase()}</AvatarFallback>
           </Avatar>
-          <span className="font-semibold text-sm">{post.user?.username}</span>
+          <span className="font-semibold text-sm">{displayName}</span>
         </Link>
       </div>
 
@@ -97,7 +100,7 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
         {/* Caption */}
         {post.caption && (
           <p className="mt-1 text-sm">
-            <span className="font-semibold">{post.user?.username}</span>{' '}
+            <span className="font-semibold">{displayName}</span>{' '}
             {post.caption}
           </p>
         )}
