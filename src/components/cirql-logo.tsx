@@ -27,23 +27,14 @@ export function CirqlLogo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
         Q
       </span>
       <span 
-        className="text-zinc-900 relative"
+        className="text-zinc-900 inline-block origin-top"
         style={{ 
           fontWeight: 900,
+          transform: 'scaleY(1.3)',
+          marginBottom: '-0.15em',
         }}
       >
         L
-        {/* Extended bottom of L */}
-        <span 
-          className="absolute bg-zinc-900"
-          style={{
-            bottom: '-0.15em',
-            right: '0',
-            width: '0.55em',
-            height: '0.12em',
-            borderRadius: '0.05em',
-          }}
-        />
       </span>
     </div>
   )
