@@ -14,6 +14,7 @@ export default function UploadPage() {
   const [preview, setPreview] = useState<string | null>(null)
   const [caption, setCaption] = useState('')
   const [story, setStory] = useState('')
+  const [price, setPrice] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -99,6 +100,7 @@ export default function UploadPage() {
           image_url: publicUrl,
           caption: caption.trim() || null,
           story: story.trim(),
+          price: price ? parseInt(price.replace(/,/g, '')) : null,
         })
 
       if (postError) {
@@ -168,6 +170,24 @@ export default function UploadPage() {
             onChange={handleFileSelect}
             className="hidden"
           />
+        </div>
+
+        {/* Price */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">가격</label>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="0"
+              value={price}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9]/g, '')
+                setPrice(val ? Number(val).toLocaleString() : '')
+              }}
+              className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">원</span>
+          </div>
         </div>
 
         {/* Caption */}

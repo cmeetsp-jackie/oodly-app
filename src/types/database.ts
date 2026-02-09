@@ -14,6 +14,7 @@ export interface Post {
   image_url: string
   caption: string | null
   story: string | null
+  price: number | null
   created_at: string
   // Joined fields
   user?: User

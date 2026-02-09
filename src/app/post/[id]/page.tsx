@@ -10,6 +10,7 @@ import { Nav } from '@/components/nav'
 export default function PostEditPage() {
   const [post, setPost] = useState<any>(null)
   const [caption, setCaption] = useState('')
+  const [price, setPrice] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -39,6 +40,7 @@ export default function PostEditPage() {
       if (postData) {
         setPost(postData)
         setCaption(postData.caption || '')
+        setPrice(postData.price ? postData.price.toLocaleString() : '')
         setIsOwner(postData.user_id === user.id)
       }
       setLoading(false)
@@ -52,7 +54,10 @@ export default function PostEditPage() {
 
     await supabase
       .from('posts')
-      .update({ caption })
+      .update({ 
+        caption,
+        price: price ? parseInt(price.replace(/,/g, '')) : null
+      })
       .eq('id', postId)
 
     setSaving(false)
@@ -122,6 +127,25 @@ export default function PostEditPage() {
         {/* Edit form (only for owner) */}
         {isOwner ? (
           <div className="p-4 bg-white space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                가격
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={price}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9]/g, '')
+                    setPrice(val ? Number(val).toLocaleString() : '')
+                  }}
+                  placeholder="0"
+                  className="w-full px-3 py-2 pr-12 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">원</span>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 캡션

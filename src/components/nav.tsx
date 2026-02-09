@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutGrid, Camera, CircleUser, Zap } from 'lucide-react'
+import { LayoutGrid, Search, Camera, CircleUser, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -75,6 +75,15 @@ export function Nav({ user }: NavProps) {
           }`}
         >
           <LayoutGrid size={24} />
+        </Link>
+
+        <Link 
+          href="/search" 
+          className={`p-2 rounded-lg transition-colors ${
+            pathname === '/search' ? 'text-black' : 'text-gray-400 hover:text-gray-600'
+          }`}
+        >
+          <Search size={24} />
         </Link>
         
         <Link 

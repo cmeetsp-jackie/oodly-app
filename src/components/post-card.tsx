@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Heart, MessageSquareMore, Zap, Send } from 'lucide-react'
+import { Heart, MessageSquareMore, Zap, Send, Share2 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { createClient } from '@/lib/supabase/client'
 import { formatDistanceToNow } from '@/lib/utils'
@@ -52,6 +52,27 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     }
 
     setIsLiking(false)
+  }
+
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/post/${post.id}`
+    const shareText = post.caption || '이 애정템을 확인해보세요!'
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'CirQL',
+          text: shareText,
+          url: shareUrl,
+        })
+      } catch (err) {
+        // User cancelled or error
+      }
+    } else {
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(shareUrl)
+      alert('링크가 복사되었습니다!')
+    }
   }
 
   const handleStartChat = async () => {
@@ -188,6 +209,13 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
               <span className="text-sm font-semibold">{commentsCount}</span>
             )}
           </button>
+
+          <button 
+            onClick={handleShare}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+          >
+            <Share2 size={18} />
+          </button>
           
           {!isOwnPost && currentUserId && (
             <button
@@ -200,6 +228,13 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             </button>
           )}
         </div>
+
+        {/* Price */}
+        {post.price && (
+          <p className="mt-2 text-lg font-bold text-blue-600">
+            {post.price.toLocaleString()}원
+          </p>
+        )}
 
         {/* Caption */}
         {post.caption && (
