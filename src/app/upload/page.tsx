@@ -74,7 +74,10 @@ export default function UploadPage() {
         .upload(fileName, file)
 
       if (uploadError) {
-        throw uploadError
+        console.error('Storage upload error:', uploadError)
+        setError(`Storage 에러: ${uploadError.message}`)
+        setLoading(false)
+        return
       }
 
       // Get public URL
@@ -92,7 +95,10 @@ export default function UploadPage() {
         })
 
       if (postError) {
-        throw postError
+        console.error('Post insert error:', postError)
+        setError(`Post 에러: ${postError.message}`)
+        setLoading(false)
+        return
       }
 
       router.push('/feed')
