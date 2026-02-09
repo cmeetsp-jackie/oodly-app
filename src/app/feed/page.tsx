@@ -10,7 +10,7 @@ export default async function FeedPage() {
   if (!user) redirect('/login')
 
   // Get posts with user info and counts
-  const { data: posts } = await supabase
+  const { data: posts, error } = await supabase
     .from('posts')
     .select(`
       *,
@@ -20,6 +20,8 @@ export default async function FeedPage() {
     `)
     .order('created_at', { ascending: false })
     .limit(50)
+
+  console.log('Posts query result:', { posts, error })
 
   // Get user's liked posts
   const { data: userLikes } = await supabase
@@ -43,10 +45,16 @@ export default async function FeedPage() {
       </header>
       
       <main className="max-w-lg mx-auto">
+        {error && (
+          <div className="p-4 bg-red-100 text-red-700 text-sm">
+            Error: {error.message}
+          </div>
+        )}
         {postsWithLikeStatus.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             <p>아직 포스트가 없습니다.</p>
             <p className="mt-2">첫 번째 옷장 사진을 올려보세요!</p>
+            <p className="mt-2 text-xs">Debug: posts={JSON.stringify(posts)}</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
