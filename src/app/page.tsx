@@ -1,70 +1,238 @@
-import Link from 'next/link'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
 
-export default async function HomePage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+type View = 'landing' | 'signup' | 'login'
 
-  // If logged in, redirect to feed
-  if (user) {
-    redirect('/feed')
+export default function HomePage() {
+  const [view, setView] = useState<View>('landing')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const supabase = createClient()
+
+  // Check if already logged in
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) router.push('/feed')
+    })
+  }, [router, supabase.auth])
+
+  const resetForm = () => {
+    setEmail('')
+    setPassword('')
+    setUsername('')
+    setError(null)
   }
 
-  return (
-    <div className="h-screen overflow-hidden flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-purple-50">
-      <div className="max-w-md w-full text-center space-y-6">
-        {/* Logo */}
-        <div className="space-y-1">
-          <h1 className="text-4xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
-            Oodly
-          </h1>
-          <p className="text-gray-600 text-base font-medium">지인과 셀럽의 애정템을 사고파는 곳</p>
-        </div>
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
 
-        {/* Features */}
-        <div className="space-y-2 text-left">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
-            <span className="text-2xl">💎</span>
-            <div>
-              <h3 className="font-bold text-gray-900">애정템 공유</h3>
-              <p className="text-xs text-gray-500">내 애정템을 자랑하고 판매해요</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
-            <span className="text-2xl">💬</span>
-            <div>
-              <h3 className="font-bold text-gray-900">찜하고 소통하고 득템까지</h3>
-              <p className="text-xs text-gray-500">마음에 드는 아이템 찜하고 소통하고 득템까지!</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
-            <span className="text-2xl">✨</span>
-            <div>
-              <h3 className="font-bold text-gray-900">팔로우</h3>
-              <p className="text-xs text-gray-500">취향 맞는 셀러를 팔로우하세요</p>
-            </div>
-          </div>
-        </div>
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { username } }
+    })
 
-        {/* CTA Buttons */}
-        <div className="space-y-2 pt-2">
-          <Link href="/signup" className="block">
-            <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-purple-500/25" size="lg">
+    if (authError) {
+      setError(authError.message)
+      setLoading(false)
+      return
+    }
+
+    if (!authData.user) {
+      setError('회원가입에 실패했습니다.')
+      setLoading(false)
+      return
+    }
+
+    router.push('/feed')
+    router.refresh()
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+      return
+    }
+
+    router.push('/feed')
+    router.refresh()
+  }
+
+  // Landing View
+  if (view === 'landing') {
+    return (
+      <div className="h-screen overflow-hidden flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-purple-50">
+        <div className="max-w-md w-full text-center space-y-6">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
+              Oodly
+            </h1>
+            <p className="text-gray-600 text-base font-medium">지인과 셀럽의 애정템을 사고파는 곳</p>
+          </div>
+
+          <div className="space-y-2 text-left">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
+              <span className="text-2xl">💎</span>
+              <div>
+                <h3 className="font-bold text-gray-900">애정템 공유</h3>
+                <p className="text-xs text-gray-500">내 애정템을 자랑하고 판매해요</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
+              <span className="text-2xl">💬</span>
+              <div>
+                <h3 className="font-bold text-gray-900">찜하고 소통하고 득템까지</h3>
+                <p className="text-xs text-gray-500">마음에 드는 아이템 찜하고 소통하고 득템까지!</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
+              <span className="text-2xl">✨</span>
+              <div>
+                <h3 className="font-bold text-gray-900">팔로우</h3>
+                <p className="text-xs text-gray-500">취향 맞는 셀러를 팔로우하세요</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2 pt-2">
+            <Button 
+              onClick={() => { resetForm(); setView('signup') }}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-purple-500/25" 
+              size="lg"
+            >
               시작하기
             </Button>
-          </Link>
-          <Link href="/login" className="block">
-            <Button variant="outline" className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 py-5 text-base rounded-xl font-semibold" size="lg">
+            <Button 
+              onClick={() => { resetForm(); setView('login') }}
+              variant="outline" 
+              className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 py-5 text-base rounded-xl font-semibold" 
+              size="lg"
+            >
               로그인
             </Button>
-          </Link>
+          </div>
+
+          <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">
+            Where favorites find new homes
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // Auth Form View (Signup or Login)
+  return (
+    <div className="h-screen overflow-hidden flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-purple-50">
+      <div className="max-w-md w-full">
+        {/* Header with back button */}
+        <div className="flex items-center mb-6">
+          <button 
+            onClick={() => { resetForm(); setView('landing') }}
+            className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <ArrowLeft className="h-6 w-6 text-gray-700" />
+          </button>
         </div>
 
-        <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">
-          Where favorites find new homes
-        </p>
+        {/* Tab Switcher */}
+        <div className="flex mb-6 bg-gray-100 rounded-xl p-1">
+          <button
+            onClick={() => { resetForm(); setView('signup') }}
+            className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+              view === 'signup' 
+                ? 'bg-white text-gray-900 shadow-sm' 
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            시작하기
+          </button>
+          <button
+            onClick={() => { resetForm(); setView('login') }}
+            className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+              view === 'login' 
+                ? 'bg-white text-gray-900 shadow-sm' 
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            로그인
+          </button>
+        </div>
+
+        {/* Logo */}
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
+            Oodly
+          </h1>
+          <p className="text-gray-500 mt-1 text-sm">
+            {view === 'signup' ? '나만의 옷장을 만들어보세요' : '다시 만나서 반가워요'}
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={view === 'signup' ? handleSignup : handleLogin} className="space-y-3">
+          {view === 'signup' && (
+            <input
+              type="text"
+              placeholder="이름 (실명)"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              minLength={2}
+              maxLength={20}
+              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+            />
+          )}
+          <input
+            type="email"
+            placeholder="이메일"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+          />
+          <input
+            type="password"
+            placeholder={view === 'signup' ? '비밀번호 (6자 이상)' : '비밀번호'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={view === 'signup' ? 6 : undefined}
+            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+          />
+          
+          {error && (
+            <p className="text-red-500 text-sm px-1">{error}</p>
+          )}
+          
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-purple-500/25"
+          >
+            {loading 
+              ? (view === 'signup' ? '가입 중...' : '로그인 중...') 
+              : (view === 'signup' ? '시작하기' : '로그인')
+            }
+          </button>
+        </form>
       </div>
     </div>
   )
