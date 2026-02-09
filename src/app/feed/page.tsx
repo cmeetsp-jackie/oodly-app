@@ -25,10 +25,10 @@ export default async function FeedPage() {
   console.log('Posts query result:', { posts, error })
 
   // Get user's liked posts
-  const { data: userLikes } = await supabase
+  const { data: userLikes } = user ? await supabase
     .from('likes')
     .select('post_id')
-    .eq('user_id', user.id)
+    .eq('user_id', user.id) : { data: null }
 
   const likedPostIds = new Set(userLikes?.map(l => l.post_id) || [])
 
@@ -60,7 +60,7 @@ export default async function FeedPage() {
         ) : (
           <div className="divide-y divide-gray-200">
             {postsWithLikeStatus.map((post) => (
-              <PostCard key={post.id} post={post} currentUserId={user.id} />
+              <PostCard key={post.id} post={post} currentUserId={user?.id || ''} />
             ))}
           </div>
         )}
