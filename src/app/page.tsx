@@ -103,9 +103,9 @@ export default function HomePage() {
       return
     }
 
-    // Show email verification message instead of redirecting
-    setSignupComplete(true)
-    setLoading(false)
+    // Go directly to feed (email verification disabled)
+    router.push('/feed')
+    router.refresh()
   }
 
   const handleLogin = async (e: React.FormEvent) => {
