@@ -61,7 +61,6 @@ export default async function FeedPage() {
           <div className="p-8 text-center text-gray-500">
             <p>아직 포스트가 없습니다.</p>
             <p className="mt-2">첫 번째 옷장 사진을 올려보세요!</p>
-            <p className="mt-2 text-xs">Debug: posts={JSON.stringify(posts)}</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
