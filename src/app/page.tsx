@@ -271,7 +271,7 @@ export default function HomePage() {
             <CirqlLogo size="md" />
           </div>
           <p className="text-gray-500 text-sm">
-            {view === 'signup' ? '나만의 옷장을 만들어보세요' : view === 'forgot' ? '이메일로 재설정 링크를 보내드려요' : '다시 만나서 반가워요'}
+            {view === 'signup' ? '옷장의 아끼는 옷부터 애정하는 액자까지.' : view === 'forgot' ? '이메일로 재설정 링크를 보내드려요' : '다시 만나서 반가워요'}
           </p>
         </div>
 
