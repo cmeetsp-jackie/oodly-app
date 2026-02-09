@@ -112,17 +112,6 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
           className="object-cover"
           sizes="(max-width: 512px) 100vw, 512px"
         />
-        
-        {/* Chat button - only show on others' posts */}
-        {!isOwnPost && currentUserId && (
-          <button
-            onClick={handleStartChat}
-            disabled={isStartingChat}
-            className="absolute bottom-3 right-3 bg-white/90 hover:bg-white p-2.5 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-50"
-          >
-            <Send size={20} className="text-blue-600" />
-          </button>
-        )}
       </div>
 
       {/* Actions */}
@@ -141,6 +130,17 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
           <Link href={`/post/${post.id}`}>
             <MessageCircle size={24} className="text-gray-700" />
           </Link>
+          
+          {/* Chat button - only show on others' posts */}
+          {!isOwnPost && currentUserId && (
+            <button
+              onClick={handleStartChat}
+              disabled={isStartingChat}
+              className="transition-transform active:scale-95 disabled:opacity-50 ml-auto"
+            >
+              <Send size={24} className="text-blue-600" />
+            </button>
+          )}
         </div>
 
         {/* Likes count */}
