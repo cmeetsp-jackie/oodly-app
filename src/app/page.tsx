@@ -20,30 +20,30 @@ export default async function HomePage() {
           <h1 className="text-5xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
             Oodly
           </h1>
-          <p className="text-gray-600 text-lg font-medium">셀럽들의 옷장을 엿보다</p>
+          <p className="text-gray-600 text-lg font-medium">지인과 셀럽의 애정템을 사고파는 곳</p>
         </div>
 
         {/* Features */}
         <div className="space-y-4 text-left">
           <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
+            <span className="text-3xl">💎</span>
+            <div>
+              <h3 className="font-bold text-gray-900 text-lg">애정템 공유</h3>
+              <p className="text-sm text-gray-500">내 애정템을 자랑하고 판매해요</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
+            <span className="text-3xl">🛒</span>
+            <div>
+              <h3 className="font-bold text-gray-900 text-lg">찜하고 구매</h3>
+              <p className="text-sm text-gray-500">마음에 드는 아이템 찜하고 바로 구매</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
             <span className="text-3xl">✨</span>
             <div>
-              <h3 className="font-bold text-gray-900 text-lg">옷장 자랑</h3>
-              <p className="text-sm text-gray-500">내 옷장의 힙한 아이템들을 플렉스</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
-            <span className="text-3xl">🔥</span>
-            <div>
-              <h3 className="font-bold text-gray-900 text-lg">찜하기</h3>
-              <p className="text-sm text-gray-500">갖고싶은 아이템 바로 찜</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
-            <span className="text-3xl">💫</span>
-            <div>
               <h3 className="font-bold text-gray-900 text-lg">팔로우</h3>
-              <p className="text-sm text-gray-500">패션 센스 통하는 사람들 팔로우</p>
+              <p className="text-sm text-gray-500">취향 맞는 셀러를 팔로우하세요</p>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default async function HomePage() {
         </div>
 
         <p className="text-sm text-gray-400 font-medium tracking-wider uppercase">
-          Instagram for your closet
+          Where favorites find new homes
         </p>
       </div>
     </div>
