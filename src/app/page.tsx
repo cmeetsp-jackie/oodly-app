@@ -36,7 +36,7 @@ export default async function HomePage() {
             <span className="text-3xl">💬</span>
             <div>
               <h3 className="font-bold text-gray-900 text-lg">찜하고 소통하고 득템까지</h3>
-              <p className="text-sm text-gray-500">마음에 드는 아이템 찜하고 댓글로 소통</p>
+              <p className="text-sm text-gray-500">마음에 드는 아이템 찜하고 소통하고 득템까지!</p>
             </div>
           </div>
           <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
