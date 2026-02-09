@@ -79,40 +79,40 @@ export default function HomePage() {
   // Landing View
   if (view === 'landing') {
     return (
-      <div className="h-screen overflow-hidden flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-purple-50">
-        <div className="max-w-md w-full text-center space-y-6">
+      <div className="min-h-screen flex flex-col p-4 pt-12 bg-gradient-to-br from-gray-50 via-white to-purple-50">
+        <div className="max-w-md w-full mx-auto text-center space-y-5">
           <div className="space-y-1">
             <h1 className="text-4xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
               Oodly
             </h1>
-            <p className="text-gray-600 text-base font-medium">지인과 셀럽의 애정템을 사고파는 곳</p>
+            <p className="text-gray-600 text-sm font-medium">지인과 셀럽의 애정템을 사고파는 곳</p>
           </div>
 
           <div className="space-y-2 text-left">
             <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
-              <span className="text-2xl">💎</span>
+              <span className="text-xl">💎</span>
               <div>
-                <h3 className="font-bold text-gray-900">애정템 공유</h3>
+                <h3 className="font-bold text-gray-900 text-sm">애정템 공유</h3>
                 <p className="text-xs text-gray-500">내 애정템을 자랑하고 판매해요</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
-              <span className="text-2xl">💬</span>
+              <span className="text-xl">💬</span>
               <div>
-                <h3 className="font-bold text-gray-900">찜하고 소통하고 득템까지</h3>
+                <h3 className="font-bold text-gray-900 text-sm">찜하고 소통하고 득템까지</h3>
                 <p className="text-xs text-gray-500">마음에 드는 아이템 찜하고 소통하고 득템까지!</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-gray-100">
-              <span className="text-2xl">✨</span>
+              <span className="text-xl">✨</span>
               <div>
-                <h3 className="font-bold text-gray-900">팔로우</h3>
+                <h3 className="font-bold text-gray-900 text-sm">팔로우</h3>
                 <p className="text-xs text-gray-500">취향 맞는 셀러를 팔로우하세요</p>
               </div>
             </div>
           </div>
 
-          <div className="space-y-2 pt-2">
+          <div className="space-y-2 pt-1">
             <Button 
               onClick={() => { resetForm(); setView('signup') }}
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-purple-500/25" 
@@ -140,10 +140,10 @@ export default function HomePage() {
 
   // Auth Form View (Signup or Login)
   return (
-    <div className="h-screen overflow-hidden flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-purple-50">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen flex flex-col p-4 pt-2 bg-gradient-to-br from-gray-50 via-white to-purple-50">
+      <div className="max-w-md w-full mx-auto">
         {/* Header with back button */}
-        <div className="flex items-center mb-6">
+        <div className="flex items-center mb-4">
           <button 
             onClick={() => { resetForm(); setView('landing') }}
             className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -153,7 +153,7 @@ export default function HomePage() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex mb-6 bg-gray-100 rounded-xl p-1">
+        <div className="flex mb-4 bg-gray-100 rounded-xl p-1">
           <button
             onClick={() => { resetForm(); setView('signup') }}
             className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${
@@ -177,11 +177,11 @@ export default function HomePage() {
         </div>
 
         {/* Logo */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
+        <div className="text-center mb-4">
+          <h1 className="text-2xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
             Oodly
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-gray-500 text-sm">
             {view === 'signup' ? '나만의 옷장을 만들어보세요' : '다시 만나서 반가워요'}
           </p>
         </div>
