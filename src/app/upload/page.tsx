@@ -56,7 +56,7 @@ export default function UploadPage() {
     }
     
     if (!story.trim()) {
-      setError('추억/스토리를 입력해주세요.')
+      setError('#특별한이유#히스토리를 입력해주세요.')
       return
     }
 
@@ -189,7 +189,7 @@ export default function UploadPage() {
         {/* Story - Required */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            추억/스토리 <span className="text-red-500">*</span>
+            #특별한이유#히스토리 <span className="text-red-500">*</span>
           </label>
           <Textarea
             placeholder="이 물건과 함께한 나만의 추억이나 스토리를 들려주세요..."

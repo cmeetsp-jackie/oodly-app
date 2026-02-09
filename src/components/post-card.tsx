@@ -211,8 +211,8 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
 
         {/* Story */}
         {post.story && (
-          <div className="mt-2 p-3 bg-amber-50 rounded-lg border border-amber-100">
-            <p className="text-xs text-amber-600 font-medium mb-1">💭 추억/스토리</p>
+          <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-xs text-gray-500 font-medium mb-1">#히스토리#특별함</p>
             <p className="text-sm text-gray-700">{post.story}</p>
           </div>
         )}
