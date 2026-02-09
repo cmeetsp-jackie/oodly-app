@@ -2,10 +2,10 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import { Nav } from '@/components/nav'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { EditDisplayName } from '@/components/edit-display-name'
 import { LogoutButton } from '@/components/logout-button'
+import { AvatarUpload } from '@/components/avatar-upload'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -51,12 +51,11 @@ export default async function ProfilePage() {
         {/* Profile header */}
         <div className="bg-white p-6">
           <div className="flex items-center gap-6">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={profile?.avatar_url || ''} />
-              <AvatarFallback className="text-2xl bg-blue-100 text-blue-600">
-                {displayName?.[0]?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <AvatarUpload 
+              currentAvatarUrl={profile?.avatar_url || null}
+              displayName={displayName || ''}
+              userId={user.id}
+            />
             
             <div className="flex-1 space-y-2">
               {/* 이름 (실명) */}
