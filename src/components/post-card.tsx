@@ -257,7 +257,7 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="댓글 달기..."
-                      className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+                      className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-gray-900 placeholder-gray-400"
                     />
                     <button
                       type="submit"
