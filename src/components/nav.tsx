@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
 interface NavProps {
-  user: { id: string; email: string } | null
+  user: { id: string; email?: string } | null
 }
 
 export function Nav({ user }: NavProps) {
