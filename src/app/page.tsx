@@ -157,7 +157,7 @@ export default function HomePage() {
             <div className="flex justify-center">
               <CirqlLogo size="lg" />
             </div>
-            <p className="text-gray-600 text-sm font-medium">지인과 셀럽의 애정템을 사고파는 곳</p>
+            <p className="text-gray-600 text-sm font-medium">나의 애정템을 자랑하고 친구의 애정템을 득템하는 곳</p>
           </div>
 
           <div className="space-y-2 text-left">
