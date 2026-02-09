@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, PlusSquare, User, Zap } from 'lucide-react'
+import { LayoutGrid, Sparkles, CircleUser, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -74,7 +74,7 @@ export function Nav({ user }: NavProps) {
             pathname === '/feed' ? 'text-black' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          <Home size={24} />
+          <LayoutGrid size={24} />
         </Link>
         
         <Link 
@@ -83,7 +83,7 @@ export function Nav({ user }: NavProps) {
             pathname === '/upload' ? 'text-black' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          <PlusSquare size={24} />
+          <Sparkles size={24} />
         </Link>
         
         <Link 
@@ -92,7 +92,7 @@ export function Nav({ user }: NavProps) {
             pathname === '/profile' || pathname.startsWith('/profile/') ? 'text-black' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          <User size={24} />
+          <CircleUser size={24} />
         </Link>
 
         <Link 

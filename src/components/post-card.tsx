@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Star, MessageSquare, Zap } from 'lucide-react'
+import { Heart, MessageSquareMore, Zap } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { createClient } from '@/lib/supabase/client'
 import { formatDistanceToNow } from '@/lib/utils'
@@ -121,14 +121,14 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             onClick={handleLike}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all active:scale-95 ${
               isLiked 
-                ? 'bg-amber-100 text-amber-600' 
+                ? 'bg-rose-100 text-rose-600' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
             disabled={isLiking}
           >
-            <Star 
+            <Heart 
               size={18} 
-              className={isLiked ? 'fill-amber-500' : ''} 
+              className={isLiked ? 'fill-rose-500' : ''} 
             />
             {likesCount > 0 && <span className="text-sm font-semibold">{likesCount}</span>}
           </button>
@@ -137,7 +137,7 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             href={`/post/${post.id}`}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
           >
-            <MessageSquare size={18} />
+            <MessageSquareMore size={18} />
             {(post.comments_count || 0) > 0 && (
               <span className="text-sm font-semibold">{post.comments_count}</span>
             )}
