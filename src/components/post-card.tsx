@@ -193,7 +193,7 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             <button
               onClick={handleStartChat}
               disabled={isStartingChat}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all active:scale-95 disabled:opacity-50 ml-auto"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-slate-800 to-blue-900 text-white hover:from-slate-900 hover:to-indigo-900 transition-all active:scale-95 disabled:opacity-50 ml-auto"
             >
               <Zap size={18} className="fill-white" />
               <span className="text-sm font-semibold">채팅</span>
