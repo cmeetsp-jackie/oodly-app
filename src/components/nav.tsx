@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutGrid, Sparkles, CircleUser, Zap } from 'lucide-react'
+import { LayoutGrid, Camera, CircleUser, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -83,7 +83,7 @@ export function Nav({ user }: NavProps) {
             pathname === '/upload' ? 'text-black' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          <Sparkles size={24} />
+          <Camera size={24} />
         </Link>
         
         <Link 
