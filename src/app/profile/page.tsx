@@ -78,14 +78,14 @@ export default async function ProfilePage() {
               <p className="font-semibold">{posts?.length || 0}</p>
               <p className="text-sm text-gray-500">게시물</p>
             </div>
-            <div className="text-center">
+            <Link href="/profile/followers" className="text-center hover:bg-gray-50 px-4 py-2 rounded-lg transition-colors">
               <p className="font-semibold">{followersCount || 0}</p>
               <p className="text-sm text-gray-500">팔로워</p>
-            </div>
-            <div className="text-center">
+            </Link>
+            <Link href="/profile/following" className="text-center hover:bg-gray-50 px-4 py-2 rounded-lg transition-colors">
               <p className="font-semibold">{followingCount || 0}</p>
               <p className="text-sm text-gray-500">팔로잉</p>
-            </div>
+            </Link>
           </div>
         </div>
 
