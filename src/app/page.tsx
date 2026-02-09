@@ -13,37 +13,37 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-black text-white">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-gray-50 via-white to-purple-50">
       <div className="max-w-md w-full text-center space-y-10">
         {/* Logo */}
         <div className="space-y-3">
-          <h1 className="text-5xl font-black tracking-tighter bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-black tracking-tighter bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
             Oodly
           </h1>
-          <p className="text-gray-400 text-lg font-light">셀럽들의 옷장을 엿보다</p>
+          <p className="text-gray-600 text-lg font-medium">셀럽들의 옷장을 엿보다</p>
         </div>
 
         {/* Features */}
-        <div className="space-y-5 text-left">
-          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 backdrop-blur border border-white/10">
+        <div className="space-y-4 text-left">
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
             <span className="text-3xl">✨</span>
             <div>
-              <h3 className="font-bold text-white text-lg">옷장 자랑</h3>
-              <p className="text-sm text-gray-400">내 옷장의 힙한 아이템들을 플렉스</p>
+              <h3 className="font-bold text-gray-900 text-lg">옷장 자랑</h3>
+              <p className="text-sm text-gray-500">내 옷장의 힙한 아이템들을 플렉스</p>
             </div>
           </div>
-          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 backdrop-blur border border-white/10">
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
             <span className="text-3xl">🔥</span>
             <div>
-              <h3 className="font-bold text-white text-lg">찜하기</h3>
-              <p className="text-sm text-gray-400">갖고싶은 아이템 바로 찜</p>
+              <h3 className="font-bold text-gray-900 text-lg">찜하기</h3>
+              <p className="text-sm text-gray-500">갖고싶은 아이템 바로 찜</p>
             </div>
           </div>
-          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 backdrop-blur border border-white/10">
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
             <span className="text-3xl">💫</span>
             <div>
-              <h3 className="font-bold text-white text-lg">팔로우</h3>
-              <p className="text-sm text-gray-400">패션 센스 통하는 사람들 팔로우</p>
+              <h3 className="font-bold text-gray-900 text-lg">팔로우</h3>
+              <p className="text-sm text-gray-500">패션 센스 통하는 사람들 팔로우</p>
             </div>
           </div>
         </div>
@@ -51,18 +51,18 @@ export default async function HomePage() {
         {/* CTA Buttons */}
         <div className="space-y-3 pt-4">
           <Link href="/signup" className="block">
-            <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-6 text-lg rounded-xl border-0" size="lg">
+            <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-6 text-lg rounded-xl border-0 shadow-lg shadow-purple-500/25" size="lg">
               시작하기
             </Button>
           </Link>
           <Link href="/login" className="block">
-            <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10 py-6 text-lg rounded-xl" size="lg">
+            <Button variant="outline" className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 py-6 text-lg rounded-xl font-semibold" size="lg">
               로그인
             </Button>
           </Link>
         </div>
 
-        <p className="text-sm text-gray-500 font-medium tracking-wider uppercase">
+        <p className="text-sm text-gray-400 font-medium tracking-wider uppercase">
           Instagram for your closet
         </p>
       </div>
