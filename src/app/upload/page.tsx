@@ -117,7 +117,7 @@ export default function UploadPage() {
         <button onClick={() => router.back()} className="text-gray-600">
           취소
         </button>
-        <h1 className="font-semibold">새 게시물</h1>
+        <h1 className="font-semibold text-gray-900">새 게시물</h1>
         <Button 
           onClick={handleUpload} 
           disabled={!file || loading}

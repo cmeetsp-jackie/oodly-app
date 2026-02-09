@@ -28,7 +28,7 @@ export default async function FollowersPage() {
           <Link href="/profile" className="p-1">
             <ArrowLeft className="h-6 w-6" />
           </Link>
-          <h1 className="text-xl font-bold">팔로워</h1>
+          <h1 className="text-xl font-bold text-gray-900">팔로워</h1>
         </div>
       </header>
 

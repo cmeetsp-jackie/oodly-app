@@ -125,7 +125,7 @@ export function ChatRoom({
                 {displayName?.[0]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <span className="font-semibold">{displayName}</span>
+            <span className="font-semibold text-gray-900">{displayName}</span>
           </Link>
         </div>
       </header>
