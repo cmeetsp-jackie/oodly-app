@@ -39,8 +39,9 @@ export function InstallPrompt() {
           )}
           {platform === 'android' && (
             <p className="text-xs text-gray-700 leading-relaxed">
-              주소창의 <span className="font-bold">"설치"</span> 버튼을 탭하거나<br />
-              메뉴 (⋮) → <span className="font-bold">"홈 화면에 추가"</span>를 선택하세요
+              <span className="font-bold">Chrome</span>으로 이 링크를 열어주세요.<br />
+              주소창에 나타나는 <span className="font-bold">"설치"</span> 버튼을 탭하거나<br />
+              오른쪽 상단 메뉴 (⋮) → <span className="font-bold">"홈 화면에 추가"</span>를 선택하세요
             </p>
           )}
           <p className="text-xs text-gray-500 mt-2">
