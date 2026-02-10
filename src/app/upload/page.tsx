@@ -10,8 +10,8 @@ import { ImagePlus, X } from 'lucide-react'
 import { Nav } from '@/components/nav'
 
 export default function UploadPage() {
-  const [file, setFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
+  const [files, setFiles] = useState<File[]>([])
+  const [previews, setPreviews] = useState<string[]>([])
   const [caption, setCaption] = useState('')
   const [story, setStory] = useState('')
   const [price, setPrice] = useState('')
@@ -22,37 +22,54 @@ export default function UploadPage() {
   const supabase = createClient()
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0]
-    if (!selectedFile) return
+    const selectedFiles = Array.from(e.target.files || [])
+    if (selectedFiles.length === 0) return
 
-    // Check file type
-    if (!selectedFile.type.startsWith('image/')) {
-      setError('이미지 파일만 업로드할 수 있습니다.')
+    // Check if adding these files would exceed 10 total
+    if (files.length + selectedFiles.length > 10) {
+      setError('최대 10장까지 업로드할 수 있습니다.')
       return
     }
 
-    // Check file size (max 5MB)
-    if (selectedFile.size > 5 * 1024 * 1024) {
-      setError('파일 크기는 5MB 이하여야 합니다.')
-      return
+    // Validate each file
+    const validFiles: File[] = []
+    const newPreviews: string[] = []
+
+    for (const file of selectedFiles) {
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        setError('이미지 파일만 업로드할 수 있습니다.')
+        continue
+      }
+
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('각 파일 크기는 5MB 이하여야 합니다.')
+        continue
+      }
+
+      validFiles.push(file)
+      newPreviews.push(URL.createObjectURL(file))
     }
 
-    setFile(selectedFile)
-    setPreview(URL.createObjectURL(selectedFile))
+    setFiles(prev => [...prev, ...validFiles])
+    setPreviews(prev => [...prev, ...newPreviews])
     setError(null)
   }
 
-  const handleRemoveImage = () => {
-    setFile(null)
-    setPreview(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
+  const handleRemoveImage = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index))
+    setPreviews(prev => {
+      const newPreviews = prev.filter((_, i) => i !== index)
+      // Revoke URL to prevent memory leak
+      URL.revokeObjectURL(prev[index])
+      return newPreviews
+    })
   }
 
   const handleUpload = async () => {
-    if (!file) {
-      setError('이미지를 선택해주세요.')
+    if (files.length === 0) {
+      setError('최소 1장의 이미지를 선택해주세요.')
       return
     }
     
@@ -72,32 +89,39 @@ export default function UploadPage() {
         return
       }
 
-      // Upload image to Supabase Storage
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`
+      // Upload all images to Supabase Storage
+      const uploadedUrls: string[] = []
       
-      const { error: uploadError } = await supabase.storage
-        .from('posts')
-        .upload(fileName, file)
+      for (const file of files) {
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
+        
+        const { error: uploadError } = await supabase.storage
+          .from('posts')
+          .upload(fileName, file)
 
-      if (uploadError) {
-        console.error('Storage upload error:', uploadError)
-        setError(`Storage 에러: ${uploadError.message}`)
-        setLoading(false)
-        return
+        if (uploadError) {
+          console.error('Storage upload error:', uploadError)
+          setError(`Storage 에러: ${uploadError.message}`)
+          setLoading(false)
+          return
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('posts')
+          .getPublicUrl(fileName)
+
+        uploadedUrls.push(publicUrl)
       }
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('posts')
-        .getPublicUrl(fileName)
-
-      // Create post
+      // Create post with images array
       const { error: postError } = await supabase
         .from('posts')
         .insert({
           user_id: user.id,
-          image_url: publicUrl,
+          image_url: uploadedUrls[0], // Keep for backward compatibility
+          images: uploadedUrls,
           caption: caption.trim() || null,
           story: story.trim(),
           price: price ? parseInt(price.replace(/,/g, '')) : null,
@@ -129,7 +153,7 @@ export default function UploadPage() {
         <h1 className="font-semibold text-gray-900">새 게시물</h1>
         <Button 
           onClick={handleUpload} 
-          disabled={!file || !story.trim() || loading}
+          disabled={files.length === 0 || !story.trim() || loading}
           size="sm"
         >
           {loading ? '업로드 중...' : '공유'}
@@ -139,20 +163,41 @@ export default function UploadPage() {
       <main className="max-w-lg mx-auto p-4">
         {/* Image upload area */}
         <div className="mb-4">
-          {preview ? (
-            <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
-              <Image
-                src={preview}
-                alt="Preview"
-                fill
-                className="object-cover"
-              />
-              <button
-                onClick={handleRemoveImage}
-                className="absolute top-2 right-2 p-1 bg-black/50 rounded-full text-white"
-              >
-                <X size={20} />
-              </button>
+          {previews.length > 0 ? (
+            <div className="space-y-2">
+              <div className="grid grid-cols-3 gap-2">
+                {previews.map((preview, index) => (
+                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+                    <Image
+                      src={preview}
+                      alt={`Preview ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-1 right-1 p-1 bg-black/50 rounded-full text-white"
+                    >
+                      <X size={16} />
+                    </button>
+                    <div className="absolute bottom-1 left-1 px-2 py-0.5 bg-black/50 rounded text-white text-xs">
+                      {index + 1}
+                    </div>
+                  </div>
+                ))}
+                {previews.length < 10 && (
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-gray-400 hover:text-gray-500 transition-colors"
+                  >
+                    <ImagePlus size={24} />
+                    <span className="text-xs mt-1">추가</span>
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 text-center">
+                {previews.length}/10 장
+              </p>
             </div>
           ) : (
             <button
@@ -160,13 +205,14 @@ export default function UploadPage() {
               className="w-full aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-gray-400 hover:text-gray-500 transition-colors"
             >
               <ImagePlus size={48} />
-              <span>사진 선택</span>
+              <span>사진 선택 (최대 10장)</span>
             </button>
           )}
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
+            multiple
             onChange={handleFileSelect}
             className="hidden"
           />
@@ -233,7 +279,7 @@ export default function UploadPage() {
         <div className="hidden md:block">
           <Button 
             onClick={handleUpload} 
-            disabled={!file || !story.trim() || loading}
+            disabled={files.length === 0 || !story.trim() || loading}
             className="w-full"
           >
             {loading ? '업로드 중...' : '공유하기'}

@@ -12,6 +12,7 @@ export interface Post {
   id: string
   user_id: string
   image_url: string
+  images?: string[] | null  // Multiple images support
   caption: string | null
   story: string | null
   price: number | null

@@ -26,10 +26,15 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
   const [loadingComments, setLoadingComments] = useState(false)
   const [postingComment, setPostingComment] = useState(false)
   const [commentsCount, setCommentsCount] = useState(post.comments_count || 0)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const supabase = createClient()
   const router = useRouter()
   
   const isOwnPost = post.user_id === currentUserId
+  
+  // Use images array if available, fallback to image_url
+  const images = post.images && post.images.length > 0 ? post.images : [post.image_url]
+  const hasMultipleImages = images.length > 1
 
   const handleLike = async () => {
     if (isLiking || !currentUserId) return
@@ -208,15 +213,55 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
         </Link>
       </div>
 
-      {/* Image */}
+      {/* Image Carousel */}
       <div className="relative aspect-square bg-gray-100">
         <Image
-          src={post.image_url}
+          src={images[currentImageIndex]}
           alt={post.caption || 'Post image'}
           fill
           className="object-cover"
           sizes="(max-width: 512px) 100vw, 512px"
         />
+        
+        {/* Navigation arrows for multiple images */}
+        {hasMultipleImages && (
+          <>
+            {currentImageIndex > 0 && (
+              <button
+                onClick={() => setCurrentImageIndex(prev => prev - 1)}
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+            )}
+            {currentImageIndex < images.length - 1 && (
+              <button
+                onClick={() => setCurrentImageIndex(prev => prev + 1)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all"
+                aria-label="Next image"
+              >
+                ›
+              </button>
+            )}
+            
+            {/* Dots indicator */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${
+                    index === currentImageIndex 
+                      ? 'bg-white w-4' 
+                      : 'bg-white/50'
+                  }`}
+                  aria-label={`Go to image ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Actions */}
