@@ -11,7 +11,7 @@ export function CirqlLogo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
     <div 
       className={`${sizes[size]} font-black flex items-baseline italic`}
       style={{ 
-        fontFamily: "'Farmhouse', 'Continuous', 'A2ji 5Medium', 'SS Rock Regular', system-ui, -apple-system, sans-serif",
+        fontFamily: "'Funtasi Lear Trial', 'Farmhouse', 'Continuous', 'A2ji 5Medium', 'SS Rock Regular', system-ui, -apple-system, sans-serif",
         letterSpacing: '-0.03em',
       }}
     >
