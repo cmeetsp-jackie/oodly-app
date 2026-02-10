@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { CirqlLogo } from '@/components/cirql-logo'
+import { InstallPrompt } from '@/components/install-prompt'
 
 type View = 'landing' | 'signup' | 'login' | 'forgot'
 
@@ -303,6 +304,9 @@ function HomeContent() {
               💡 Cirql은 초대제로 운영됩니다. 초대 링크를 받으신 후 다시 접속해주세요.
             </p>
           )}
+
+          {/* App Install Prompt */}
+          <InstallPrompt />
 
           <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">
             Where favorites find new homes
