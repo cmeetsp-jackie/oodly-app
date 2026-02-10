@@ -13,47 +13,37 @@ export default async function Image() {
     (
       <div
         style={{
-          background: 'linear-gradient(135deg, #1e40af 0%, #581c87 100%)',
+          background: 'linear-gradient(to bottom right, #1e40af, #581c87)',
           width: '100%',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '80px',
         }}
       >
-        {/* Logo text */}
+        {/* Logo */}
         <div
           style={{
-            fontSize: 160,
+            fontSize: 120,
             fontWeight: 'bold',
             color: 'white',
-            fontStyle: 'italic',
-            letterSpacing: '-0.02em',
-            marginBottom: '40px',
+            marginBottom: 30,
+            fontFamily: 'sans-serif',
           }}
         >
-          <span style={{ textTransform: 'uppercase' }}>C</span>
-          ir
-          <span style={{ 
-            background: 'linear-gradient(to bottom, #fff, #a78bfa)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-            textTransform: 'uppercase'
-          }}>Q</span>
-          l<span style={{ fontSize: '60px', marginLeft: '8px' }}>·</span>
+          CirQl
         </div>
 
-        {/* Tagline */}
+        {/* Main tagline */}
         <div
           style={{
-            fontSize: 38,
-            color: 'rgba(255, 255, 255, 0.95)',
+            fontSize: 32,
+            color: 'white',
             textAlign: 'center',
-            marginBottom: '20px',
-            fontWeight: 600,
+            marginBottom: 20,
+            fontFamily: 'sans-serif',
+            opacity: 0.95,
           }}
         >
           친구의 애정템, 셀럽의 애정템 그리고 나의 애정템이 한곳에.
@@ -62,36 +52,39 @@ export default async function Image() {
         {/* Subtitle */}
         <div
           style={{
-            fontSize: 28,
-            color: 'rgba(255, 255, 255, 0.75)',
+            fontSize: 20,
+            color: 'white',
             textAlign: 'center',
+            fontFamily: 'sans-serif',
+            opacity: 0.7,
             letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            fontWeight: 500,
           }}
         >
-          Where favorites find new homes
+          WHERE FAVORITES FIND NEW HOMES
         </div>
 
         {/* Features */}
         <div
           style={{
             display: 'flex',
-            gap: '40px',
-            marginTop: '60px',
+            marginTop: 50,
+            gap: 30,
+            fontSize: 18,
+            color: 'white',
+            fontFamily: 'sans-serif',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: 40 }}>💎</span>
-            <span style={{ fontSize: 24, color: 'white', fontWeight: 600 }}>애정템 공유</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ fontSize: 36, marginBottom: 8 }}>💎</div>
+            <div>애정템 공유</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: 40 }}>💬</span>
-            <span style={{ fontSize: 24, color: 'white', fontWeight: 600 }}>찜 & 소통</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ fontSize: 36, marginBottom: 8 }}>💬</div>
+            <div>찜 & 소통</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: 40 }}>✨</span>
-            <span style={{ fontSize: 24, color: 'white', fontWeight: 600 }}>팔로우</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ fontSize: 36, marginBottom: 8 }}>✨</div>
+            <div>팔로우</div>
           </div>
         </div>
       </div>
