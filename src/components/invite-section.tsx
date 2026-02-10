@@ -81,7 +81,7 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
 
     // Create invite message with link
     const inviteLink = `${window.location.origin}/?invite=${randomCode}`
-    const inviteMessage = `애정템/옷장이 가장 궁금한 3인이셔서 ${userName}님에게 초대받으셨어요 ✨\n\n${inviteLink}`
+    const inviteMessage = `애정템/옷장이 궁금하다고 ${userName}님이 초대하셨어요 (초대장 통해서만 입장가능) ✨\n\n${inviteLink}`
 
     // Copy to clipboard
     try {

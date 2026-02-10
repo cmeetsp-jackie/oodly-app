@@ -226,9 +226,9 @@ function HomeContent() {
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-4 rounded-2xl shadow-lg">
               <p className="text-base font-bold mb-1">✨ 특별한 초대장이 도착했어요!</p>
               <p className="text-sm leading-relaxed">
-                애정템/옷장이 가장 궁금한 3인이셔서<br />
+                고객님의 애정템/옷장이 궁금하다고<br />
                 {inviterName ? (
-                  <><span className="font-bold">{inviterName}</span>님에게 초대받으셨어요</>
+                  <><span className="font-bold">{inviterName}</span>님이 초대하셨어요</>
                 ) : (
                   <>초대를 받으셨어요</>
                 )}
@@ -373,7 +373,7 @@ function HomeContent() {
           </div>
           {view === 'signup' && inviterName && (
             <p className="text-gray-700 text-sm font-semibold mb-1">
-              <span className="text-blue-600">{inviterName}</span>님의 애정템이 궁금하시죠?
+              고객님도 <span className="text-blue-600">{inviterName}</span>님의 옷장과 애정템이 궁금하시죠?
             </p>
           )}
           {view === 'signup' && !inviterName && (
