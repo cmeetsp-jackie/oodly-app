@@ -83,22 +83,17 @@ export default async function ProfilePage() {
           {/* Stats */}
           <div className="flex justify-around mt-6 pt-4 border-t border-gray-100">
             <div className="text-center">
-              <p className="font-semibold">{posts?.length || 0}</p>
-              <p className="text-sm text-gray-500">게시물</p>
+              <p className="text-xl font-bold text-gray-900">{posts?.length || 0}</p>
+              <p className="text-sm text-gray-600">게시물</p>
             </div>
             <Link href="/profile/followers" className="text-center hover:bg-gray-50 px-4 py-2 rounded-lg transition-colors">
-              <p className="font-semibold">{followersCount || 0}</p>
-              <p className="text-sm text-gray-500">팔로워</p>
+              <p className="text-xl font-bold text-gray-900">{followersCount || 0}</p>
+              <p className="text-sm text-gray-600">팔로워</p>
             </Link>
             <Link href="/profile/following" className="text-center hover:bg-gray-50 px-4 py-2 rounded-lg transition-colors">
-              <p className="font-semibold">{followingCount || 0}</p>
-              <p className="text-sm text-gray-500">팔로잉</p>
+              <p className="text-xl font-bold text-gray-900">{followingCount || 0}</p>
+              <p className="text-sm text-gray-600">팔로잉</p>
             </Link>
-          </div>
-
-          {/* Logout */}
-          <div className="mt-4 pt-4 border-t border-gray-100 flex justify-center">
-            <LogoutButton />
           </div>
         </div>
 
@@ -138,6 +133,11 @@ export default async function ProfilePage() {
             </Link>
           </div>
         )}
+
+        {/* Logout - moved to bottom */}
+        <div className="mt-0.5 bg-white p-6 flex justify-center">
+          <LogoutButton />
+        </div>
       </main>
 
       <Nav user={user} />
