@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/opengraph-image",
+        url: "https://cirql.dev/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Cirql - 애정템이 모이는 곳",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Cirql - 애정템이 모이는 곳",
     description: "친구의 애정템, 셀럽의 애정템 그리고 나의 애정템이 한곳에.",
-    images: ["/opengraph-image"],
+    images: ["https://cirql.dev/opengraph-image"],
   },
 };
 
