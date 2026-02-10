@@ -32,6 +32,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Farmhouse';
+  src: url('/fonts/Farmhouse.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
