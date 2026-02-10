@@ -24,9 +24,25 @@ function HomeContent() {
   const searchParams = useSearchParams()
   const supabase = createClient()
   
-  // Get invite code from URL
-  const inviteCode = searchParams.get('invite')
+  // Get invite code from URL or localStorage
+  const inviteCodeFromUrl = searchParams.get('invite')
+  const [inviteCode, setInviteCode] = useState<string | null>(inviteCodeFromUrl)
   const [inviterName, setInviterName] = useState<string | null>(null)
+
+  // Save invite code to localStorage and restore on app reopen
+  useEffect(() => {
+    if (inviteCodeFromUrl) {
+      // Save to localStorage
+      localStorage.setItem('cirql_invite_code', inviteCodeFromUrl)
+      setInviteCode(inviteCodeFromUrl)
+    } else {
+      // Try to restore from localStorage
+      const savedCode = localStorage.getItem('cirql_invite_code')
+      if (savedCode) {
+        setInviteCode(savedCode)
+      }
+    }
+  }, [inviteCodeFromUrl])
 
   // Check if already logged in
   useEffect(() => {
@@ -172,6 +188,9 @@ function HomeContent() {
       console.error('Failed to mark invite as used:', markError)
     }
 
+    // Clear invite code from localStorage
+    localStorage.removeItem('cirql_invite_code')
+
     // Go directly to feed
     router.push('/feed')
     router.refresh()
@@ -189,6 +208,9 @@ function HomeContent() {
       setLoading(false)
       return
     }
+
+    // Clear invite code from localStorage
+    localStorage.removeItem('cirql_invite_code')
 
     router.push('/feed')
     router.refresh()

@@ -49,6 +49,9 @@ export default function LoginPage() {
       return
     }
 
+    // Clear invite code from localStorage
+    localStorage.removeItem('cirql_invite_code')
+
     router.push('/feed')
     router.refresh()
   }
