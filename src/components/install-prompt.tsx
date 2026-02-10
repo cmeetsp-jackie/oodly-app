@@ -32,7 +32,8 @@ export function InstallPrompt() {
           </h3>
           {platform === 'ios' && (
             <p className="text-xs text-gray-700 leading-relaxed">
-              Safari 하단의 <span className="font-bold">공유 버튼 (⬆️)</span>을 탭한 후<br />
+              <span className="font-bold">Safari</span>로 이 링크를 열어주세요.<br />
+              그 다음 Safari 하단의 <span className="font-bold">공유 버튼 (⬆️)</span>을 탭하고<br />
               <span className="font-bold">"홈 화면에 추가"</span>를 선택하세요
             </p>
           )}
