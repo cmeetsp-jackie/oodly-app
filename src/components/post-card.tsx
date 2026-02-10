@@ -35,23 +35,41 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     if (isLiking || !currentUserId) return
     setIsLiking(true)
 
-    if (isLiked) {
-      setIsLiked(false)
-      setLikesCount(prev => prev - 1)
-      await supabase
-        .from('likes')
-        .delete()
-        .eq('user_id', currentUserId)
-        .eq('post_id', post.id)
-    } else {
-      setIsLiked(true)
-      setLikesCount(prev => prev + 1)
-      await supabase
-        .from('likes')
-        .insert({ user_id: currentUserId, post_id: post.id })
-    }
+    const wasLiked = isLiked
+    const prevCount = likesCount
 
-    setIsLiking(false)
+    try {
+      if (isLiked) {
+        // Optimistic update
+        setIsLiked(false)
+        setLikesCount(prev => prev - 1)
+
+        const { error } = await supabase
+          .from('likes')
+          .delete()
+          .eq('user_id', currentUserId)
+          .eq('post_id', post.id)
+
+        if (error) throw error
+      } else {
+        // Optimistic update
+        setIsLiked(true)
+        setLikesCount(prev => prev + 1)
+
+        const { error } = await supabase
+          .from('likes')
+          .insert({ user_id: currentUserId, post_id: post.id })
+
+        if (error) throw error
+      }
+    } catch (error) {
+      console.error('Like operation failed:', error)
+      // Revert on error
+      setIsLiked(wasLiked)
+      setLikesCount(prevCount)
+    } finally {
+      setIsLiking(false)
+    }
   }
 
   const handleShare = async () => {
@@ -80,11 +98,16 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     setIsStartingChat(true)
 
     try {
-      const { data: existing } = await supabase
+      const { data: existing, error: findError } = await supabase
         .from('conversations')
         .select('id')
         .or(`and(participant1_id.eq.${currentUserId},participant2_id.eq.${post.user.id}),and(participant1_id.eq.${post.user.id},participant2_id.eq.${currentUserId})`)
-        .single()
+        .maybeSingle()
+
+      // Handle find error (but not "no rows" case)
+      if (findError && findError.code !== 'PGRST116') {
+        throw findError
+      }
 
       if (existing) {
         router.push(`/chat/${existing.id}`)
@@ -100,27 +123,37 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
           .single()
 
         if (error) throw error
+        if (!newConv) throw new Error('Failed to create conversation')
+        
         router.push(`/chat/${newConv.id}`)
       }
     } catch (error) {
       console.error('Error starting chat:', error)
+      alert('채팅을 시작할 수 없습니다. 다시 시도해주세요.')
+    } finally {
+      setIsStartingChat(false)
     }
-
-    setIsStartingChat(false)
   }
 
   const handleToggleComments = async () => {
     if (!showComments && comments.length === 0) {
       setLoadingComments(true)
-      const { data } = await supabase
-        .from('comments')
-        .select(`*, user:users!comments_user_id_fkey(*)`)
-        .eq('post_id', post.id)
-        .order('created_at', { ascending: true })
-        .limit(20)
-      
-      setComments(data || [])
-      setLoadingComments(false)
+      try {
+        const { data, error } = await supabase
+          .from('comments')
+          .select(`*, user:users!comments_user_id_fkey(*)`)
+          .eq('post_id', post.id)
+          .order('created_at', { ascending: true })
+          .limit(20)
+        
+        if (error) throw error
+        setComments(data || [])
+      } catch (error) {
+        console.error('Failed to load comments:', error)
+        // Don't block UI, just log error
+      } finally {
+        setLoadingComments(false)
+      }
     }
     setShowComments(!showComments)
   }
@@ -133,22 +166,31 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     const content = newComment.trim()
     setNewComment('')
 
-    const { data, error } = await supabase
-      .from('comments')
-      .insert({
-        post_id: post.id,
-        user_id: currentUserId,
-        content
-      })
-      .select(`*, user:users!comments_user_id_fkey(*)`)
-      .single()
+    try {
+      const { data, error } = await supabase
+        .from('comments')
+        .insert({
+          post_id: post.id,
+          user_id: currentUserId,
+          content
+        })
+        .select(`*, user:users!comments_user_id_fkey(*)`)
+        .single()
 
-    if (!error && data) {
-      setComments(prev => [...prev, data])
-      setCommentsCount(prev => prev + 1)
+      if (error) throw error
+
+      if (data) {
+        setComments(prev => [...prev, data])
+        setCommentsCount(prev => prev + 1)
+      }
+    } catch (error) {
+      console.error('Comment posting failed:', error)
+      // Restore comment text on error
+      setNewComment(content)
+      alert('댓글 작성에 실패했습니다. 다시 시도해주세요.')
+    } finally {
+      setPostingComment(false)
     }
-
-    setPostingComment(false)
   }
 
   const displayName = post.user?.display_name || post.user?.username

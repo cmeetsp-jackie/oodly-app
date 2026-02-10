@@ -70,18 +70,44 @@ export default function PostEditPage() {
     
     setDeleting(true)
 
-    // Delete from storage
-    if (post?.image_url) {
-      const path = post.image_url.split('/').pop()
-      if (path) {
-        await supabase.storage.from('posts').remove([`${user.id}/${path}`])
+    try {
+      // Delete from storage (best-effort, don't block on failure)
+      if (post?.image_url) {
+        try {
+          const urlParts = post.image_url.split('/')
+          const path = urlParts[urlParts.length - 1]
+          
+          if (path && user?.id) {
+            const { error: storageError } = await supabase.storage
+              .from('posts')
+              .remove([`${user.id}/${path}`])
+            
+            if (storageError) {
+              console.warn('Storage deletion failed (non-critical):', storageError)
+            }
+          }
+        } catch (storageErr) {
+          console.warn('Storage deletion error (non-critical):', storageErr)
+        }
       }
+
+      // Delete post (critical operation)
+      const { error: deleteError } = await supabase
+        .from('posts')
+        .delete()
+        .eq('id', postId)
+
+      if (deleteError) {
+        throw deleteError
+      }
+
+      // Success - navigate to profile
+      router.push('/profile')
+    } catch (error) {
+      console.error('Post deletion failed:', error)
+      alert('삭제에 실패했습니다. 다시 시도해주세요.')
+      setDeleting(false)
     }
-
-    // Delete post
-    await supabase.from('posts').delete().eq('id', postId)
-
-    router.push('/profile')
   }
 
   if (loading) {
