@@ -191,7 +191,7 @@ export default function HomePage() {
               className="w-full bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-slate-900 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-blue-800/25" 
               size="lg"
             >
-              시작하기
+              서클 시작하기
             </Button>
             <Button 
               onClick={() => { resetForm(); setView('login') }}
