@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { EditDisplayName } from '@/components/edit-display-name'
 import { LogoutButton } from '@/components/logout-button'
 import { AvatarUpload } from '@/components/avatar-upload'
+import { InviteSection } from '@/components/invite-section'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -37,6 +38,13 @@ export default async function ProfilePage() {
     .from('follows')
     .select('*', { count: 'exact', head: true })
     .eq('follower_id', user.id)
+
+  // Get invite quota
+  const { data: inviteQuota } = await supabase
+    .from('user_invite_quota')
+    .select('*')
+    .eq('user_id', user.id)
+    .single()
 
   // 써클명 (display_name) 또는 username 사용
   const displayName = profile?.display_name || profile?.username
@@ -93,6 +101,15 @@ export default async function ProfilePage() {
             <LogoutButton />
           </div>
         </div>
+
+        {/* Invite Section */}
+        {inviteQuota && (
+          <InviteSection 
+            userId={user.id}
+            remainingInvites={inviteQuota.remaining_invites}
+            totalInvites={inviteQuota.total_invites}
+          />
+        )}
 
         {/* Posts grid */}
         <div className="grid grid-cols-3 gap-0.5 mt-0.5">
