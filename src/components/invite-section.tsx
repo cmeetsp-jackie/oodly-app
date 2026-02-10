@@ -81,23 +81,7 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
       return
     }
 
-    // Update user_invite_quota (decrease remaining by 1)
-    const newRemaining = remainingInvites - 1
-    const newUsed = totalInvites - newRemaining
-    
-    const { error: quotaError } = await supabase
-      .from('user_invite_quota')
-      .update({
-        used_invites: newUsed,
-        remaining_invites: newRemaining,
-        updated_at: new Date().toISOString()
-      })
-      .eq('user_id', userId)
-
-    if (quotaError) {
-      console.error('Failed to update invite quota:', quotaError)
-      // Continue anyway - code is already created
-    }
+    // NOTE: Do NOT decrease quota here - only decrease when someone actually signs up with this code
 
     // Create invite message with link
     const inviteLink = `${window.location.origin}/?invite=${randomCode}`
@@ -132,9 +116,8 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
       console.error('Copy failed:', err)
     }
     
-    // Update state and show message
+    // Update state and show message (don't decrease remaining count yet)
     setInviteMessage(message)
-    setRemainingInvites(prev => prev - 1)
     
     if (copySuccess) {
       setCopied(true)
