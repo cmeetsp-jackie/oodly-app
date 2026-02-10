@@ -17,6 +17,8 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
   const [userName, setUserName] = useState<string>('')
   const [postCount, setPostCount] = useState<number>(0)
   const [checkingPosts, setCheckingPosts] = useState(true)
+  const [inviteMessage, setInviteMessage] = useState<string>('')
+  const [showMessage, setShowMessage] = useState(false)
   const supabase = createClient()
   
   const canCreateInvite = postCount >= 2
@@ -99,19 +101,19 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
 
     // Create invite message with link
     const inviteLink = `${window.location.origin}/?invite=${randomCode}`
-    const inviteMessage = `애정템/옷장이 궁금하다고 ${userName}님이 초대하셨어요 (초대장 통해서만 입장가능) ✨\n\n${inviteLink}`
+    const message = `애정템/옷장이 궁금하다고 ${userName}님이 초대하셨어요 (초대장 통해서만 입장가능) ✨\n\n${inviteLink}`
 
-    // Copy full message to clipboard (without Web Share API)
+    // Try to copy to clipboard
     let copySuccess = false
     
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(inviteMessage)
+        await navigator.clipboard.writeText(message)
         copySuccess = true
       } else {
         // Fallback for older browsers
         const textarea = document.createElement('textarea')
-        textarea.value = inviteMessage
+        textarea.value = message
         textarea.style.position = 'fixed'
         textarea.style.top = '-9999px'
         textarea.style.left = '-9999px'
@@ -130,12 +132,19 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
       console.error('Copy failed:', err)
     }
     
+    // Update state and show message
+    setInviteMessage(message)
+    setRemainingInvites(prev => prev - 1)
+    
     if (copySuccess) {
       setCopied(true)
-      setRemainingInvites(prev => prev - 1)
+      setShowMessage(false)
       setTimeout(() => setCopied(false), 3000)
     } else {
-      setError('복사에 실패했습니다. 다시 시도해주세요.')
+      // Show message for manual copy
+      setCopied(false)
+      setShowMessage(true)
+      setError(null)
     }
 
     setLoading(false)
@@ -178,6 +187,23 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
         <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-3 text-sm leading-relaxed">
           ✅ 초대 메시지가 복사되었습니다!<br />
           카톡/텔레그램에 <span className="font-bold">붙여넣기(Paste)</span>하면 문구와 링크가 함께 전송됩니다.
+        </div>
+      )}
+
+      {showMessage && inviteMessage && (
+        <div className="bg-blue-50 border-2 border-blue-300 px-4 py-4 rounded-lg mb-3">
+          <p className="text-sm font-bold text-blue-900 mb-2">
+            📋 아래 메시지를 길게 눌러 복사하세요
+          </p>
+          <div 
+            className="bg-white p-3 rounded-lg border border-blue-200 text-sm leading-relaxed whitespace-pre-wrap select-all"
+            style={{ userSelect: 'all', WebkitUserSelect: 'all' }}
+          >
+            {inviteMessage}
+          </div>
+          <p className="text-xs text-blue-700 mt-2">
+            💡 위 텍스트를 길게 눌러 "복사"를 선택한 후 카톡에 붙여넣으세요
+          </p>
         </div>
       )}
 
