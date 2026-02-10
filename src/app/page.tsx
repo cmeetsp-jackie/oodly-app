@@ -28,6 +28,8 @@ function HomeContent() {
   const inviteCodeFromUrl = searchParams.get('invite')
   const [inviteCode, setInviteCode] = useState<string | null>(inviteCodeFromUrl)
   const [inviterName, setInviterName] = useState<string | null>(null)
+  const [manualInviteCode, setManualInviteCode] = useState('')
+  const [codeCopied, setCodeCopied] = useState(false)
 
   // Save invite code to localStorage and restore on app reopen
   useEffect(() => {
@@ -246,16 +248,34 @@ function HomeContent() {
         <div className="max-w-md w-full mx-auto text-center space-y-5">
           {/* Special invite indicator */}
           {inviteCode && (
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-4 rounded-2xl shadow-lg">
-              <p className="text-base font-bold mb-1">✨ 특별한 초대장이 도착했어요!</p>
-              <p className="text-sm leading-relaxed">
-                고객님의 애정템/옷장이 궁금하다고<br />
-                {inviterName ? (
-                  <><span className="font-bold">{inviterName}</span>님이 초대하셨어요</>
-                ) : (
-                  <>초대를 받으셨어요</>
-                )}
-              </p>
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-4 rounded-2xl shadow-lg space-y-3">
+              <div>
+                <p className="text-base font-bold mb-1">✨ 특별한 초대장이 도착했어요!</p>
+                <p className="text-sm leading-relaxed">
+                  고객님의 애정템/옷장이 궁금하다고<br />
+                  {inviterName ? (
+                    <><span className="font-bold">{inviterName}</span>님이 초대하셨어요</>
+                  ) : (
+                    <>초대를 받으셨어요</>
+                  )}
+                </p>
+              </div>
+              
+              {/* Copy invite code button */}
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(inviteCode)
+                    setCodeCopied(true)
+                    setTimeout(() => setCodeCopied(false), 2000)
+                  } catch (err) {
+                    console.error('Failed to copy:', err)
+                  }
+                }}
+                className="w-full py-2.5 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition-colors"
+              >
+                {codeCopied ? '✓ 초대 코드 복사됨!' : '📋 초대 코드 복사하기'}
+              </button>
             </div>
           )}
 
@@ -290,6 +310,36 @@ function HomeContent() {
               </div>
             </div>
           </div>
+
+          {/* Manual invite code input (if no code) */}
+          {!inviteCode && (
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="초대 코드 입력 (예: CIRQL-XXXXX)"
+                  value={manualInviteCode}
+                  onChange={(e) => setManualInviteCode(e.target.value.toUpperCase())}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+                <Button
+                  onClick={() => {
+                    if (manualInviteCode.trim()) {
+                      setInviteCode(manualInviteCode.trim())
+                      localStorage.setItem('cirql_invite_code', manualInviteCode.trim())
+                    }
+                  }}
+                  className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700"
+                  disabled={!manualInviteCode.trim()}
+                >
+                  확인
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500 text-center">
+                💡 초대 코드를 받으셨다면 위에 입력해주세요
+              </p>
+            </div>
+          )}
 
           <div className="space-y-2 pt-1">
             <Button 
