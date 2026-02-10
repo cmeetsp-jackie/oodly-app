@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { Nav } from '@/components/nav'
 import { PostCard } from '@/components/post-card'
 import { CirqlLogo } from '@/components/cirql-logo'
@@ -13,6 +14,72 @@ export default async function FeedPage() {
   const { data: { user } } = await supabase.auth.getUser()
   // Temporarily disabled for testing
   // if (!user) redirect('/login')
+
+  // Check if user has posted at least once
+  let userPostCount = 0
+  let displayName = ''
+  if (user) {
+    const { data: userPosts } = await supabase
+      .from('posts')
+      .select('id')
+      .eq('user_id', user.id)
+    
+    userPostCount = userPosts?.length || 0
+
+    // Get user's display name
+    const { data: userData } = await supabase
+      .from('users')
+      .select('display_name, username')
+      .eq('id', user.id)
+      .single()
+    
+    displayName = userData?.display_name || userData?.username || '회원'
+  }
+
+  // Show onboarding if user hasn't posted yet
+  if (user && userPostCount === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <header className="sticky top-0 bg-white/80 backdrop-blur-sm border-b border-gray-200 p-3 z-10">
+          <div className="flex justify-center">
+            <CirqlLogo size="md" />
+          </div>
+        </header>
+        
+        <div className="flex items-center justify-center px-4 py-16">
+          <div className="max-w-md w-full text-center">
+            <div className="mb-8">
+              <div className="text-6xl mb-4">💎</div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                환영합니다, {displayName}님!
+              </h1>
+              <p className="text-xl text-gray-700 font-medium mb-2">
+                애정템을 한 개라도 올려야 피드가 열려요
+              </p>
+              <p className="text-gray-600 mt-4">
+                서클은 서로의 애정템과 옷장을 공유하는 곳입니다.<br />
+                먼저 당신의 애정템을 공유해주세요.
+              </p>
+            </div>
+
+            <Link href="/upload">
+              <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg">
+                첫 애정템 올리기
+              </button>
+            </Link>
+
+            <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-gray-700">
+                💡 <strong>팁:</strong> 옷장의 아끼는 옷, 애정하는 소품, 특별한 물건 등 무엇이든 좋습니다!
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <Nav user={user} />
+      </div>
+    )
+  }
 
   // Get posts with user info and counts
   const { data: posts, error } = await supabase
