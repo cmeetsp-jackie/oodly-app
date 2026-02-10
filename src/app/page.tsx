@@ -336,6 +336,11 @@ function HomeContent() {
           <div className="flex justify-center mb-1">
             <CirqlLogo size="md" />
           </div>
+          {view === 'signup' && (
+            <p className="text-gray-700 text-sm font-semibold mb-1">
+              애정템이 뭔지 정말 궁금한 3명의 지인만 초대할수있어요
+            </p>
+          )}
           <p className="text-gray-500 text-sm">
             {view === 'signup' ? '옷장의 아끼는 옷부터 애정하는 액자까지.' : view === 'forgot' ? '이메일로 재설정 링크를 보내드려요' : '다시 만나서 반가워요'}
           </p>
