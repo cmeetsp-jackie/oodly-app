@@ -489,6 +489,32 @@ function HomeContent() {
               className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-1000 focus:border-transparent bg-white"
             />
           )}
+          {view === 'signup' && !inviteCode && (
+            <div>
+              <input
+                type="text"
+                placeholder="초대 코드 (예: CIRQL-XXXXX)"
+                value={manualInviteCode}
+                onChange={(e) => setManualInviteCode(e.target.value.toUpperCase())}
+                required
+                className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-1000 focus:border-transparent bg-white"
+              />
+              {manualInviteCode && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (manualInviteCode.trim()) {
+                      setInviteCode(manualInviteCode.trim())
+                      localStorage.setItem('cirql_invite_code', manualInviteCode.trim())
+                    }
+                  }}
+                  className="mt-2 w-full py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700"
+                >
+                  초대 코드 확인
+                </button>
+              )}
+            </div>
+          )}
           <input
             type="email"
             placeholder="이메일"
@@ -521,12 +547,12 @@ function HomeContent() {
           
           <button 
             type="submit" 
-            disabled={loading}
+            disabled={loading || (view === 'signup' && !inviteCode)}
             className="w-full py-3.5 bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-slate-900 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-800/25"
           >
             {loading 
               ? (view === 'signup' ? '가입 중...' : view === 'forgot' ? '전송 중...' : '로그인 중...') 
-              : (view === 'signup' ? '시작하기' : view === 'forgot' ? '비밀번호 재설정 링크 보내기' : '로그인')
+              : (view === 'signup' ? (inviteCode ? '시작하기' : '초대 코드 확인 후 시작하기') : view === 'forgot' ? '비밀번호 재설정 링크 보내기' : '로그인')
             }
           </button>
           
