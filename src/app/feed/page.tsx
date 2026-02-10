@@ -49,29 +49,36 @@ export default async function FeedPage() {
         <div className="flex items-center justify-center px-4 py-16">
           <div className="max-w-md w-full text-center">
             <div className="mb-8">
-              <div className="text-6xl mb-4">💎</div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-3">
+              <div className="text-6xl mb-6 animate-bounce">✨</div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
                 환영합니다, {displayName}님!
               </h1>
-              <p className="text-xl text-gray-700 font-medium mb-2">
-                애정템을 한 개라도 올려야 피드가 열려요
-              </p>
-              <p className="text-gray-600 mt-4">
-                서클은 서로의 애정템과 옷장을 공유하는 곳입니다.<br />
-                먼저 당신의 애정템을 공유해주세요.
-              </p>
+              <div className="space-y-3">
+                <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                  다른 사람들의 애정템이<br />궁금하신가요?
+                </p>
+                <p className="text-gray-700 text-lg leading-relaxed">
+                  피드에는 초대받은 사람들의<br />
+                  특별한 애정템과 옷장이 가득해요 💎
+                </p>
+                <div className="my-6 py-4 px-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+                  <p className="text-gray-800 font-medium">
+                    하지만 먼저,<br />
+                    <span className="text-blue-600 font-bold">당신의 애정템을 하나 공유해주세요</span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             <Link href="/upload">
-              <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg">
-                첫 애정템 올리기
+              <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl text-lg font-bold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
+                첫 애정템 올리고 피드 보기 →
               </button>
             </Link>
 
-            <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-700">
-                💡 <strong>팁:</strong> 옷장의 아끼는 옷, 애정하는 소품, 특별한 물건 등 무엇이든 좋습니다!
-              </p>
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500">
+              <span>💡</span>
+              <span>옷, 가방, 신발, 소품, 무엇이든 좋아요</span>
             </div>
           </div>
         </div>
