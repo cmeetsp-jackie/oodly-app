@@ -16,6 +16,12 @@ export const metadata: Metadata = {
   title: "Cirql - 애정템이 모이는 곳",
   description: "친구의 애정템, 셀럽의 애정템 그리고 나의 애정템이 한곳에. 옷장의 아끼는 옷부터 애정하는 액자까지.",
   keywords: ["애정템", "중고거래", "패션", "옷장", "커뮤니티", "cirql"],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Cirql",
+  },
   openGraph: {
     title: "Cirql - 애정템이 모이는 곳",
     description: "친구의 애정템, 셀럽의 애정템 그리고 나의 애정템이 한곳에.",

@@ -1,0 +1,24 @@
+{
+  "name": "Cirql - 애정템이 모이는 곳",
+  "short_name": "Cirql",
+  "description": "친구의 애정템, 셀럽의 애정템 그리고 나의 애정템이 한곳에",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
