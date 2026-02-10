@@ -1,24 +1,39 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
-  const [inviteCode, setInviteCode] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
+  
+  // Get invite code from URL
+  const inviteCode = searchParams.get('invite')
+
+  useEffect(() => {
+    if (!inviteCode) {
+      setError('초대 코드가 필요합니다. 초대 링크를 통해 접속해주세요.')
+    }
+  }, [inviteCode])
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
+
+    if (!inviteCode) {
+      setError('초대 코드가 필요합니다.')
+      setLoading(false)
+      return
+    }
 
     // Step 1: Validate invite code
     const { data: inviteData, error: inviteError } = await supabase
@@ -78,37 +93,26 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-100">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Cirql</h1>
-          <p className="text-gray-600 mt-2">나만의 옷장을 만들어보세요</p>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-white">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-bold text-gray-900 mb-3" style={{ fontFamily: "'Funtasi Lear Trial', 'Farmhouse', system-ui" }}>
+            CirQL
+          </h1>
+          <p className="text-gray-600 text-sm">옷장의 아기는 옷부터 애정하는 액자까지.</p>
         </div>
         
-        <form onSubmit={handleSignup} className="space-y-4">
+        <form onSubmit={handleSignup} className="space-y-3">
           <div>
             <input
               type="text"
-              placeholder="초대 코드 (필수)"
-              value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent font-mono tracking-wider"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Cirql은 초대제로 운영됩니다
-            </p>
-          </div>
-          <div>
-            <input
-              type="text"
-              placeholder="사용자 이름"
+              placeholder="이름 (실명)"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
               minLength={2}
               maxLength={20}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
             />
           </div>
           <div>
@@ -118,7 +122,7 @@ export default function SignupPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
             />
           </div>
           <div>
@@ -129,18 +133,18 @@ export default function SignupPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
             />
           </div>
           {error && (
-            <p className="text-red-500 text-sm">{error}</p>
+            <p className="text-red-500 text-sm text-center">{error}</p>
           )}
           <button 
             type="submit" 
-            disabled={loading}
-            className="w-full py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            disabled={loading || !inviteCode}
+            className="w-full py-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors mt-4"
           >
-            {loading ? '가입 중...' : '회원가입'}
+            {loading ? '가입 중...' : '시작하기'}
           </button>
         </form>
         
