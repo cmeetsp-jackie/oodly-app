@@ -192,16 +192,16 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
 
       {showMessage && inviteMessage && (
         <div className="bg-blue-50 border-2 border-blue-300 px-4 py-4 rounded-lg mb-3">
-          <p className="text-sm font-bold text-blue-900 mb-2">
+          <p className="text-sm font-bold text-gray-900 mb-2">
             📋 아래 메시지를 길게 눌러 복사하세요
           </p>
           <div 
-            className="bg-white p-3 rounded-lg border border-blue-200 text-sm leading-relaxed whitespace-pre-wrap select-all"
+            className="bg-white p-3 rounded-lg border border-blue-200 text-sm text-gray-900 leading-relaxed whitespace-pre-wrap select-all"
             style={{ userSelect: 'all', WebkitUserSelect: 'all' }}
           >
             {inviteMessage}
           </div>
-          <p className="text-xs text-blue-700 mt-2">
+          <p className="text-xs text-gray-700 mt-2">
             💡 위 텍스트를 길게 눌러 "복사"를 선택한 후 카톡에 붙여넣으세요
           </p>
         </div>
