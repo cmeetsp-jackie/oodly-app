@@ -15,26 +15,45 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [userName, setUserName] = useState<string>('')
+  const [postCount, setPostCount] = useState<number>(0)
+  const [checkingPosts, setCheckingPosts] = useState(true)
   const supabase = createClient()
+  
+  const canCreateInvite = postCount >= 2
 
-  // Fetch user's name
+  // Fetch user's name and post count
   useEffect(() => {
-    const fetchUserName = async () => {
-      const { data } = await supabase
+    const fetchUserData = async () => {
+      // Get user name
+      const { data: userData } = await supabase
         .from('users')
         .select('display_name, username')
         .eq('id', userId)
         .single()
 
-      if (data) {
-        setUserName(data.display_name || data.username || '친구')
+      if (userData) {
+        setUserName(userData.display_name || userData.username || '친구')
       }
+
+      // Get post count
+      const { count } = await supabase
+        .from('posts')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+
+      setPostCount(count || 0)
+      setCheckingPosts(false)
     }
 
-    fetchUserName()
+    fetchUserData()
   }, [userId, supabase])
 
   const createInviteLink = async () => {
+    if (!canCreateInvite) {
+      setError(`애정템을 ${2 - postCount}개 더 올려주세요!`)
+      return
+    }
+    
     if (remainingInvites <= 0) {
       setError('남은 초대 코드가 없습니다.')
       return
@@ -88,9 +107,23 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
         </div>
       </div>
 
-      <p className="text-sm text-gray-600 mb-4">
-        애정템을 꼭 올려줬으면 하는 3명을 초대해보세요! ✨
-      </p>
+      {/* Post count requirement */}
+      {!canCreateInvite && !checkingPosts && (
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-sm font-semibold text-amber-900 mb-1">
+            ✋ 초대 조건이 필요해요
+          </p>
+          <p className="text-xs text-amber-700">
+            먼저 애정템을 <span className="font-bold">2개 이상</span> 올려주세요! (현재: {postCount}개)
+          </p>
+        </div>
+      )}
+
+      {canCreateInvite && (
+        <p className="text-sm text-gray-600 mb-4">
+          애정템을 꼭 올려줬으면 하는 3명을 초대해보세요! ✨
+        </p>
+      )}
 
       {error && (
         <p className="text-red-500 text-sm mb-3">{error}</p>
@@ -105,13 +138,21 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
 
       <button
         onClick={createInviteLink}
-        disabled={loading || remainingInvites <= 0}
+        disabled={loading || remainingInvites <= 0 || !canCreateInvite || checkingPosts}
         className="w-full py-3.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? '생성 중...' : remainingInvites > 0 ? '초대 메시지 생성하기' : '초대 가능 횟수를 모두 사용했습니다'}
+        {checkingPosts 
+          ? '확인 중...'
+          : loading 
+          ? '생성 중...' 
+          : !canCreateInvite
+          ? `애정템을 ${2 - postCount}개 더 올려주세요`
+          : remainingInvites > 0 
+          ? '초대 메시지 생성하기' 
+          : '초대 가능 횟수를 모두 사용했습니다'}
       </button>
 
-      {remainingInvites > 0 && (
+      {remainingInvites > 0 && canCreateInvite && (
         <p className="text-xs text-gray-500 text-center mt-3">
           버튼을 누르면 초대 메시지가 자동으로 복사됩니다
         </p>
