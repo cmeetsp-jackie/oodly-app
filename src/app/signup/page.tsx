@@ -9,6 +9,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
+  const [inviteCode, setInviteCode] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -19,7 +20,26 @@ export default function SignupPage() {
     setLoading(true)
     setError(null)
 
-    // Sign up the user with username in metadata
+    // Step 1: Validate invite code
+    const { data: inviteData, error: inviteError } = await supabase
+      .from('invites')
+      .select('id, is_used')
+      .eq('code', inviteCode.trim().toUpperCase())
+      .single()
+
+    if (inviteError || !inviteData) {
+      setError('유효하지 않은 초대 코드입니다.')
+      setLoading(false)
+      return
+    }
+
+    if (inviteData.is_used) {
+      setError('이미 사용된 초대 코드입니다.')
+      setLoading(false)
+      return
+    }
+
+    // Step 2: Sign up the user
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -42,6 +62,17 @@ export default function SignupPage() {
       return
     }
 
+    // Step 3: Mark invite as used
+    const { error: markError } = await supabase.rpc('mark_invite_used', {
+      invite_code: inviteCode.trim().toUpperCase(),
+      user_id: authData.user.id
+    })
+
+    if (markError) {
+      console.error('Failed to mark invite as used:', markError)
+      // Continue anyway - user is already created
+    }
+
     router.push('/feed')
     router.refresh()
   }
@@ -55,6 +86,19 @@ export default function SignupPage() {
         </div>
         
         <form onSubmit={handleSignup} className="space-y-4">
+          <div>
+            <input
+              type="text"
+              placeholder="초대 코드 (필수)"
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent font-mono tracking-wider"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Cirql은 초대제로 운영됩니다
+            </p>
+          </div>
           <div>
             <input
               type="text"
