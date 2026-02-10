@@ -25,6 +25,7 @@ function HomeContent() {
   
   // Get invite code from URL
   const inviteCode = searchParams.get('invite')
+  const [inviterName, setInviterName] = useState<string | null>(null)
 
   // Check if already logged in
   useEffect(() => {
@@ -36,6 +37,33 @@ function HomeContent() {
       }
     })
   }, [router, supabase.auth])
+
+  // Fetch inviter name if invite code exists
+  useEffect(() => {
+    if (!inviteCode) return
+
+    const fetchInviter = async () => {
+      const { data: invite } = await supabase
+        .from('invites')
+        .select('created_by')
+        .eq('code', inviteCode.toUpperCase())
+        .single()
+
+      if (invite?.created_by) {
+        const { data: user } = await supabase
+          .from('users')
+          .select('username, display_name')
+          .eq('id', invite.created_by)
+          .single()
+
+        if (user) {
+          setInviterName(user.display_name || user.username)
+        }
+      }
+    }
+
+    fetchInviter()
+  }, [inviteCode, supabase])
 
   // Show nothing while checking auth
   if (checkingAuth) {
@@ -195,9 +223,16 @@ function HomeContent() {
         <div className="max-w-md w-full mx-auto text-center space-y-5">
           {/* Special invite indicator */}
           {inviteCode && (
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-2xl shadow-lg">
-              <p className="text-sm font-semibold">🎁 특별 초대를 받으셨습니다!</p>
-              <p className="text-xs mt-1 opacity-90">초대 코드: {inviteCode}</p>
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-4 rounded-2xl shadow-lg">
+              <p className="text-base font-bold mb-1">✨ 특별한 초대장이 도착했어요!</p>
+              <p className="text-sm leading-relaxed">
+                애정템/옷장이 가장 궁금한 3인이셔서<br />
+                {inviterName ? (
+                  <><span className="font-bold">{inviterName}</span>님에게 초대받으셨어요</>
+                ) : (
+                  <>초대를 받으셨어요</>
+                )}
+              </p>
             </div>
           )}
 
@@ -336,7 +371,12 @@ function HomeContent() {
           <div className="flex justify-center mb-1">
             <CirqlLogo size="md" />
           </div>
-          {view === 'signup' && (
+          {view === 'signup' && inviterName && (
+            <p className="text-gray-700 text-sm font-semibold mb-1">
+              <span className="text-blue-600">{inviterName}</span>님의 애정템이 궁금하시죠?
+            </p>
+          )}
+          {view === 'signup' && !inviterName && (
             <p className="text-gray-700 text-sm font-semibold mb-1">
               애정템이 뭔지 정말 궁금한 3명의 지인만 초대할수있어요
             </p>
@@ -395,6 +435,12 @@ function HomeContent() {
           
           {error && (
             <p className="text-red-500 text-sm px-1">{error}</p>
+          )}
+          
+          {view === 'signup' && inviterName && (
+            <p className="text-center text-sm text-gray-600 mb-2 -mt-1">
+              가입하고 <span className="font-semibold text-gray-800">{inviterName}님</span>의 애정템을 확인해보세요!
+            </p>
           )}
           
           <button 
