@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface InviteSectionProps {
@@ -14,7 +14,25 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [userName, setUserName] = useState<string>('')
   const supabase = createClient()
+
+  // Fetch user's name
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const { data } = await supabase
+        .from('users')
+        .select('display_name, username')
+        .eq('id', userId)
+        .single()
+
+      if (data) {
+        setUserName(data.display_name || data.username || '친구')
+      }
+    }
+
+    fetchUserName()
+  }, [userId, supabase])
 
   const createInviteLink = async () => {
     if (remainingInvites <= 0) {
@@ -42,12 +60,13 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
       return
     }
 
-    // Create invite link
-    const inviteLink = `${window.location.origin}/signup?invite=${randomCode}`
+    // Create invite message with link
+    const inviteLink = `${window.location.origin}/?invite=${randomCode}`
+    const inviteMessage = `애정템/옷장이 가장 궁금한 3인이셔서 ${userName}님에게 초대받으셨어요 ✨\n\n${inviteLink}`
 
     // Copy to clipboard
     try {
-      await navigator.clipboard.writeText(inviteLink)
+      await navigator.clipboard.writeText(inviteMessage)
       setCopied(true)
       setRemainingInvites(prev => prev - 1)
       setTimeout(() => setCopied(false), 3000)
@@ -78,8 +97,9 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
       )}
 
       {copied && (
-        <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-3 text-sm">
-          ✅ 초대 링크가 복사되었습니다! 친구에게 공유해보세요.
+        <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-3 text-sm leading-relaxed">
+          ✅ 초대 메시지가 복사되었습니다!<br />
+          카톡/텔레그램에 바로 붙여넣어보세요.
         </div>
       )}
 
@@ -88,12 +108,12 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
         disabled={loading || remainingInvites <= 0}
         className="w-full py-3.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? '생성 중...' : remainingInvites > 0 ? '초대 링크 생성하기' : '초대 가능 횟수를 모두 사용했습니다'}
+        {loading ? '생성 중...' : remainingInvites > 0 ? '초대 메시지 생성하기' : '초대 가능 횟수를 모두 사용했습니다'}
       </button>
 
       {remainingInvites > 0 && (
         <p className="text-xs text-gray-500 text-center mt-3">
-          버튼을 누르면 초대 링크가 자동으로 복사됩니다
+          버튼을 누르면 초대 메시지가 자동으로 복사됩니다
         </p>
       )}
     </div>
