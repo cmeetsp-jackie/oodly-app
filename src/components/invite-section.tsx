@@ -101,53 +101,33 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
     const inviteLink = `${window.location.origin}/?invite=${randomCode}`
     const inviteMessage = `애정템/옷장이 궁금하다고 ${userName}님이 초대하셨어요 (초대장 통해서만 입장가능) ✨\n\n${inviteLink}`
 
-    // Try Web Share API first (better for mobile)
+    // Copy full message to clipboard (without Web Share API)
     let copySuccess = false
     
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          text: inviteMessage
-        })
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(inviteMessage)
         copySuccess = true
-      } catch (err: any) {
-        // User cancelled share or share failed
-        if (err.name !== 'AbortError') {
-          console.log('Share failed, trying clipboard...')
-        } else {
-          // User cancelled - still count as success
+      } else {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea')
+        textarea.value = inviteMessage
+        textarea.style.position = 'fixed'
+        textarea.style.top = '-9999px'
+        textarea.style.left = '-9999px'
+        document.body.appendChild(textarea)
+        textarea.focus()
+        textarea.select()
+        
+        const successful = document.execCommand('copy')
+        document.body.removeChild(textarea)
+        
+        if (successful) {
           copySuccess = true
         }
       }
-    }
-    
-    // If share not available or failed, try clipboard
-    if (!copySuccess) {
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(inviteMessage)
-          copySuccess = true
-        } else {
-          // Fallback for older browsers
-          const textarea = document.createElement('textarea')
-          textarea.value = inviteMessage
-          textarea.style.position = 'fixed'
-          textarea.style.top = '-9999px'
-          textarea.style.left = '-9999px'
-          document.body.appendChild(textarea)
-          textarea.focus()
-          textarea.select()
-          
-          const successful = document.execCommand('copy')
-          document.body.removeChild(textarea)
-          
-          if (successful) {
-            copySuccess = true
-          }
-        }
-      } catch (err) {
-        console.error('Copy failed:', err)
-      }
+    } catch (err) {
+      console.error('Copy failed:', err)
     }
     
     if (copySuccess) {
@@ -155,7 +135,7 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
       setRemainingInvites(prev => prev - 1)
       setTimeout(() => setCopied(false), 3000)
     } else {
-      setError('공유에 실패했습니다. 다시 시도해주세요.')
+      setError('복사에 실패했습니다. 다시 시도해주세요.')
     }
 
     setLoading(false)
@@ -196,8 +176,8 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
 
       {copied && (
         <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-3 text-sm leading-relaxed">
-          ✅ 초대 링크가 준비되었습니다!<br />
-          카톡/텔레그램에 붙여넣어보세요.
+          ✅ 초대 메시지가 복사되었습니다!<br />
+          카톡/텔레그램에 <span className="font-bold">붙여넣기(Paste)</span>하면 문구와 링크가 함께 전송됩니다.
         </div>
       )}
 
@@ -219,7 +199,7 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
 
       {remainingInvites > 0 && canCreateInvite && (
         <p className="text-xs text-gray-500 text-center mt-3">
-          버튼을 누르면 공유 화면이 열리거나 메시지가 복사됩니다
+          버튼을 누르면 초대 메시지(문구+링크)가 자동으로 복사됩니다
         </p>
       )}
     </div>
