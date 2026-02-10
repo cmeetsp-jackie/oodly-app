@@ -29,7 +29,7 @@ const createIcon = async (size) => {
             font-style="italic"
             fill="white" 
             text-anchor="middle"
-            letter-spacing="${size * 0.005}">CirQl</text>
+            letter-spacing="${size * 0.005}">CirQL</text>
     </svg>
   `;
 
