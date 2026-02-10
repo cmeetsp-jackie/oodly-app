@@ -39,7 +39,7 @@ Clubhouse 스타일의 초대 시스템을 구현하고 데이터베이스를 �
 3. `New query` 클릭
 4. 아래 파일의 내용을 복사하여 붙여넣기:
    ```
-   /Users/pc/.openclaw/workspace/oodly/supabase/reset-and-init.sql
+   /Users/pc/.openclaw/workspace/cirql/supabase/reset-and-init.sql
    ```
 5. `Run` 버튼 클릭
 6. 완료 메시지 확인:
@@ -79,7 +79,7 @@ SELECT code, is_used FROM invites WHERE created_by IS NULL ORDER BY code;
 ### Step 4: 테스트
 
 1. **회원가입 테스트**
-   - https://oodly-app.vercel.app/signup 접속
+   - https://cirql.dev/signup 접속
    - 초대 코드 입력: `CIRQL-JACKIE-01`
    - 회원가입 진행
    - 성공 시 `/feed`로 리다이렉트
