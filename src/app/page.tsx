@@ -1,15 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { CirqlLogo } from '@/components/cirql-logo'
 
 type View = 'landing' | 'signup' | 'login' | 'forgot'
 
-export default function HomePage() {
+function HomeContent() {
   const [view, setView] = useState<View>('landing')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -20,7 +20,11 @@ export default function HomePage() {
   const [resetSent, setResetSent] = useState(false)
   const [signupComplete, setSignupComplete] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
+  
+  // Get invite code from URL
+  const inviteCode = searchParams.get('invite')
 
   // Check if already logged in
   useEffect(() => {
@@ -85,6 +89,32 @@ export default function HomePage() {
     setLoading(true)
     setError(null)
 
+    if (!inviteCode) {
+      setError('초대 코드가 필요합니다. 초대 링크를 통해 접속해주세요.')
+      setLoading(false)
+      return
+    }
+
+    // Step 1: Validate invite code
+    const { data: inviteData, error: inviteError } = await supabase
+      .from('invites')
+      .select('id, is_used')
+      .eq('code', inviteCode.trim().toUpperCase())
+      .single()
+
+    if (inviteError || !inviteData) {
+      setError('유효하지 않은 초대 코드입니다.')
+      setLoading(false)
+      return
+    }
+
+    if (inviteData.is_used) {
+      setError('이미 사용된 초대 코드입니다.')
+      setLoading(false)
+      return
+    }
+
+    // Step 2: Sign up the user
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -103,7 +133,17 @@ export default function HomePage() {
       return
     }
 
-    // Go directly to feed (email verification disabled)
+    // Step 3: Mark invite as used
+    const { error: markError } = await supabase.rpc('mark_invite_used', {
+      invite_code: inviteCode.trim().toUpperCase(),
+      user_id: authData.user.id
+    })
+
+    if (markError) {
+      console.error('Failed to mark invite as used:', markError)
+    }
+
+    // Go directly to feed
     router.push('/feed')
     router.refresh()
   }
@@ -153,11 +193,19 @@ export default function HomePage() {
     return (
       <div className="min-h-screen flex flex-col p-4 pt-12 bg-gradient-to-br from-gray-50 via-white to-slate-100">
         <div className="max-w-md w-full mx-auto text-center space-y-5">
+          {/* Special invite indicator */}
+          {inviteCode && (
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-2xl shadow-lg">
+              <p className="text-sm font-semibold">🎁 특별 초대를 받으셨습니다!</p>
+              <p className="text-xs mt-1 opacity-90">초대 코드: {inviteCode}</p>
+            </div>
+          )}
+
           <div className="space-y-2">
             <div className="flex justify-center">
               <CirqlLogo size="lg" />
             </div>
-            <p className="text-gray-500 text-xs">옷장부터 애정하는 만년필까지</p>
+            <p className="text-gray-500 text-xs">옷장의 아끼는 옷부터 애정하는 액자까지.</p>
             <p className="text-gray-600 text-sm font-medium">친구의 애정템, 셀럽의 애정템 그리고 나의 애정템이 한곳에.</p>
           </div>
 
@@ -187,11 +235,23 @@ export default function HomePage() {
 
           <div className="space-y-2 pt-1">
             <Button 
-              onClick={() => { resetForm(); setView('signup') }}
-              className="w-full bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-slate-900 text-white font-bold py-5 text-base rounded-xl border-0 shadow-lg shadow-blue-800/25" 
+              onClick={() => { 
+                if (!inviteCode) {
+                  setError('초대 링크를 통해 접속해주세요. Cirql은 초대제로 운영됩니다.')
+                  return
+                }
+                resetForm(); 
+                setView('signup') 
+              }}
+              className={`w-full font-bold py-5 text-base rounded-xl border-0 shadow-lg ${
+                inviteCode 
+                  ? 'bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-slate-900 text-white shadow-blue-800/25'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
               size="lg"
+              disabled={!inviteCode}
             >
-              서클 시작하기
+              {inviteCode ? '서클 시작하기' : '초대 코드가 필요합니다'}
             </Button>
             <Button 
               onClick={() => { resetForm(); setView('login') }}
@@ -202,6 +262,12 @@ export default function HomePage() {
               로그인
             </Button>
           </div>
+          
+          {!inviteCode && (
+            <p className="text-xs text-center text-gray-500 mt-2">
+              💡 Cirql은 초대제로 운영됩니다. 초대 링크를 받으신 후 다시 접속해주세요.
+            </p>
+          )}
 
           <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">
             Where favorites find new homes
@@ -275,6 +341,19 @@ export default function HomePage() {
           </p>
         </div>
 
+        {/* Invite code display for signup */}
+        {view === 'signup' && inviteCode && (
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 px-4 py-3 rounded-xl mb-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-blue-900">초대 코드</p>
+                <p className="text-sm font-mono font-bold text-blue-700">{inviteCode}</p>
+              </div>
+              <span className="text-2xl">✨</span>
+            </div>
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={view === 'signup' ? handleSignup : view === 'forgot' ? handleForgotPassword : handleLogin} className="space-y-3">
           {view === 'signup' && (
@@ -342,5 +421,19 @@ export default function HomePage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-slate-100">
+        <div className="text-center animate-pulse">
+          <CirqlLogo size="lg" />
+        </div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   )
 }
