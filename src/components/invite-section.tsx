@@ -79,6 +79,24 @@ export function InviteSection({ userId, remainingInvites: initialRemaining, tota
       return
     }
 
+    // Update user_invite_quota (decrease remaining by 1)
+    const newRemaining = remainingInvites - 1
+    const newUsed = totalInvites - newRemaining
+    
+    const { error: quotaError } = await supabase
+      .from('user_invite_quota')
+      .update({
+        used_invites: newUsed,
+        remaining_invites: newRemaining,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', userId)
+
+    if (quotaError) {
+      console.error('Failed to update invite quota:', quotaError)
+      // Continue anyway - code is already created
+    }
+
     // Create invite message with link
     const inviteLink = `${window.location.origin}/?invite=${randomCode}`
     const inviteMessage = `애정템/옷장이 궁금하다고 ${userName}님이 초대하셨어요 (초대장 통해서만 입장가능) ✨\n\n${inviteLink}`
